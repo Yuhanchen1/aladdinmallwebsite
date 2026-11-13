@@ -33,3 +33,7 @@ body{background:#fff}header{background:#f7f5f1e8;box-shadow:none}header nav>a{al
 .hero-scroll-shell .scene,.hero-scroll-shell .scene:hover{transform:perspective(1100px) translate3d(var(--scene-x,0px),var(--scene-y,0px),var(--scene-z,0px)) rotateX(var(--scene-rx,0deg)) rotateY(var(--scene-ry,0deg)) rotate(calc(var(--angle) * (1 - var(--row-turn,0))));will-change:transform}
 @media(max-width:650px){.hero-scroll-shell{height:240svh}}
 @media(prefers-reduced-motion:reduce){.hero-scroll-shell .scene,.hero-scroll-shell .scene:hover{transform:translate(var(--scene-x,0px),var(--scene-y,0px))!important}}
+
+/* Depth emergence: scroll sets blur directly to keep focus in sync with Z. */
+.hero-scroll-shell .scene,.hero-scroll-shell .scene:hover{transition:box-shadow .3s;transform-origin:50% 50%}
+@media(prefers-reduced-motion:reduce){.hero-scroll-shell .scene{filter:none!important}}
