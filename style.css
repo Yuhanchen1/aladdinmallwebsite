@@ -186,3 +186,14 @@ body .note p,body .help p,body .app-grid p,body footer p,body dialog p{
  font-family:Poppins,Arial,sans-serif;font-size:var(--body-copy-size);
  line-height:var(--body-copy-leading);font-weight:400;letter-spacing:normal;
 }
+
+/* Hero description and benefit bullets use their dedicated type scales. */
+body .hero-scroll-shell .hero-copy>p{font-size:18px;line-height:28px}
+body .hero-scroll-shell .hero-copy .checks{
+ font-family:Poppins,Arial,sans-serif;font-size:16px;line-height:24px;
+ font-weight:400;color:#6941c6;gap:12px 20px;flex-wrap:wrap;
+}
+body .hero-scroll-shell .hero-copy .checks li{display:inline-flex;align-items:center}
+body .hero-scroll-shell .hero-copy .checks li::before{
+ flex-shrink:0;width:18px;height:18px;margin-right:8px;font-size:12px;line-height:18px;
+}
