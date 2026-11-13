@@ -83,7 +83,7 @@ document.querySelectorAll('[data-sector]').forEach(control => {
   let settling = false;
   const mobile = innerWidth <= 650;
   const travel = shell.offsetHeight - hero.offsetHeight;
-  const rawProgress = clamp(((mobile ? 80 : 88) - shell.getBoundingClientRect().top) / Math.max(1,travel));
+  const rawProgress = clamp(((mobile ? 80 : 70) - shell.getBoundingClientRect().top) / Math.max(1,travel));
   // Let visitors read while the scene changes depth before the copy exits.
   const holdEnd = mobile ? .34 : .4;
   const progress = clamp((rawProgress-holdEnd)/(1-holdEnd));
@@ -200,6 +200,10 @@ document.querySelectorAll('[data-sector]').forEach(control => {
  canvas.setAttribute('aria-hidden','true');hero.prepend(canvas);
  const ctx=canvas.getContext('2d',{alpha:false});
  if(!ctx){canvas.remove();return;}
+ const nav=document.querySelector('header');
+ const navCanvas=canvas.cloneNode();navCanvas.className='nav-atmosphere';
+ nav?.prepend(navCanvas);
+ const navCtx=navCanvas.getContext('2d',{alpha:false});
  const pixels=ctx.createImageData(96,60);
  const clamp=x=>Math.max(0,Math.min(1,x));
  const smooth=x=>{x=clamp(x);return x*x*(3-2*x);};
@@ -210,10 +214,11 @@ document.querySelectorAll('[data-sector]').forEach(control => {
   requestAnimationFrame(draw);
   if(document.hidden||now-last<50)return;
   const bounds=shell.getBoundingClientRect();
-  if(bounds.bottom<0||bounds.top>innerHeight)return;
+  if(bounds.bottom<0||bounds.top>innerHeight){navCanvas.style.opacity='0';return;}
   const dt=previous?Math.min(now-previous,100):50;previous=now;last=now;
-  const progress=clamp(((innerWidth<=650?80:88)-bounds.top)/Math.max(1,shell.offsetHeight-hero.offsetHeight));
+  const progress=clamp(((innerWidth<=650?80:70)-bounds.top)/Math.max(1,shell.offsetHeight-hero.offsetHeight));
   canvas.style.opacity=String(1-smooth((progress-.46)/.24));
+  navCanvas.style.opacity=canvas.style.opacity;
   const p=smooth(progress),target=[.38+.35*p,.36+.18*p,.22-.04*p];
   const intro=reduced.matches?1:smooth((now-started)/1800);
   const follow=1-Math.exp(-dt/450);
@@ -239,6 +244,7 @@ document.querySelectorAll('[data-sector]').forEach(control => {
    pixels.data[idx]=col[0];pixels.data[idx+1]=col[1];pixels.data[idx+2]=col[2];pixels.data[idx+3]=255;
   }
   ctx.putImageData(pixels,0,0);
+  navCtx?.putImageData(pixels,0,0);
  }
  requestAnimationFrame(draw);
 })();
