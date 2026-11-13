@@ -174,3 +174,15 @@ header>.nav-atmosphere{
  header,header.scrolled{padding-inline:16px}
  .hero-scroll-shell .world-hero>.lavender-atmosphere{top:-80px;height:calc(100% + 80px)}
 }
+
+/* Shared section-label and description typography at every breakpoint. */
+:root{--tag-color:#6941c6;--body-copy-size:16px;--body-copy-leading:24px}
+body main small,body .hero-copy small,body .gallery-copy small{
+ font-family:Poppins,Arial,sans-serif;font-size:16px;line-height:24px;
+ font-weight:600;color:var(--tag-color);text-transform:uppercase;letter-spacing:1.6px;
+}
+body main p,body .hero-copy>p,body .gallery-copy p,
+body .note p,body .help p,body .app-grid p,body footer p,body dialog p{
+ font-family:Poppins,Arial,sans-serif;font-size:var(--body-copy-size);
+ line-height:var(--body-copy-leading);font-weight:400;letter-spacing:normal;
+}
