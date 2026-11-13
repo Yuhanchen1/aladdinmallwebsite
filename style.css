@@ -79,3 +79,16 @@ header.scrolled{background:rgba(250,248,255,.94)}
 .hero-scroll-shell .scene-8{right:5%;top:auto;bottom:15%;width:195px;height:250px}
 @media(max-width:650px){.hero-scroll-shell .scene-5{left:5%;top:22px;width:88px;height:108px}.hero-scroll-shell .scene-6{right:7%;top:24px;width:85px;height:100px}.hero-scroll-shell .scene-7{left:5%;bottom:125px;width:100px;height:120px}.hero-scroll-shell .scene-8{right:4%;bottom:130px;width:100px;height:130px}}
 @media(prefers-reduced-motion:reduce){.hero-scroll-shell .scene,.hero-scroll-shell .scene:hover{transform:translate(var(--scene-x,0px),var(--scene-y,0px))!important}}
+
+/* Only the gallery track scrolls sideways; the introduction stays in place. */
+.hero-scroll-shell .world-hero{overflow-x:clip!important}
+.hero-scroll-shell .world-hero.row-ready .scene-stage{
+ display:block;position:absolute;inset:0;z-index:1;
+ overflow-x:auto;overflow-y:hidden;pointer-events:none;
+ scrollbar-width:thin;scrollbar-color:#b692f6 transparent;
+ overscroll-behavior-x:contain;scroll-padding-inline:20px;
+ -webkit-overflow-scrolling:touch;
+}
+.hero-scroll-shell .world-hero.row-ready .scene-stage .scene{pointer-events:auto}
+.hero-scroll-shell .world-hero.row-ready .gallery-copy{position:absolute;z-index:6}
+.hero-scroll-shell .world-hero.row-ready .scene-stage:focus-visible{outline:2px solid #b692f6;outline-offset:-4px}
