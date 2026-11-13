@@ -189,3 +189,55 @@ document.querySelectorAll('[data-sector]').forEach(control => {
  addEventListener('scroll',queue,{passive:true});addEventListener('resize',measure,{passive:true});
  reduced.addEventListener('change',queue);measure();
 })();
+
+/* Diffuse atmospheric field: a moving contour, following the opening scroll. */
+(() => {
+ const hero=document.querySelector('.hero-scroll-shell .world-hero');
+ const shell=document.querySelector('.hero-scroll-shell');
+ if(!hero||!shell)return;
+ const canvas=document.createElement('canvas');
+ canvas.className='lavender-atmosphere';canvas.width=96;canvas.height=60;
+ canvas.setAttribute('aria-hidden','true');hero.prepend(canvas);
+ const ctx=canvas.getContext('2d',{alpha:false});
+ if(!ctx){canvas.remove();return;}
+ const pixels=ctx.createImageData(96,60);
+ const clamp=x=>Math.max(0,Math.min(1,x));
+ const smooth=x=>{x=clamp(x);return x*x*(3-2*x);};
+ const mix=(a,b,t)=>a.map((v,i)=>v+(b[i]-v)*t);
+ const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+ let last=0,previous=0,current=[-.3,.3,.22],started=performance.now();
+ function draw(now){
+  requestAnimationFrame(draw);
+  if(document.hidden||now-last<50)return;
+  const bounds=shell.getBoundingClientRect();
+  if(bounds.bottom<0||bounds.top>innerHeight)return;
+  const dt=previous?Math.min(now-previous,100):50;previous=now;last=now;
+  const progress=clamp(((innerWidth<=650?80:88)-bounds.top)/Math.max(1,shell.offsetHeight-hero.offsetHeight));
+  const p=smooth(progress),target=[.38+1.12*p,.36+.84*p,.22-.1*p];
+  const intro=reduced.matches?1:smooth((now-started)/1800);
+  const follow=1-Math.exp(-dt/450);
+  current=current.map((v,i)=>intro<1?[-.3,.3,.22][i]+(target[i]-[-.3,.3,.22][i])*intro:v+(target[i]-v)*follow);
+  const tip=current[0]+(reduced.matches?0:Math.sin(now*.00033+1.3)*.035);
+  const half=current[1]+(reduced.matches?0:Math.sin(now*.0005)*.025);
+  const soft=current[2],aspect=hero.clientWidth/hero.clientHeight;
+  const points=Array.from({length:32},(_,i)=>{
+   const y=-.3+(tip+.3)*i/31;
+   return [half*aspect*Math.pow(Math.max(0,1-y/tip),.72),y];
+  });
+  for(let y=0;y<60;y++)for(let x=0;x<96;x++){
+   const px=Math.abs(x/96-.5)*aspect,py=y/60;let d=100;
+   for(let i=1;i<points.length;i++){
+    const [ax,ay]=points[i-1],[bx,by]=points[i],dx=bx-ax,dy=by-ay;
+    const t=clamp(((px-ax)*dx+(py-ay)*dy)/Math.max(.000001,dx*dx+dy*dy));
+    d=Math.min(d,Math.hypot(px-ax-t*dx,py-ay-t*dy));
+   }
+   if(py<tip&&px<half*aspect*Math.pow(1-py/tip,.72))d=-d;
+   const g=1-smooth((d-.25+soft)/(2*soft));
+   const col=g<.38?mix([255,255,255],[234,222,252],smooth(g/.38)):mix([234,222,252],[205,180,240],smooth((g-.38)/.62));
+   const idx=(y*96+x)*4;
+   pixels.data[idx]=col[0];pixels.data[idx+1]=col[1];pixels.data[idx+2]=col[2];pixels.data[idx+3]=255;
+  }
+  ctx.putImageData(pixels,0,0);
+ }
+ requestAnimationFrame(draw);
+})();
