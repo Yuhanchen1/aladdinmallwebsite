@@ -90,7 +90,9 @@ document.querySelectorAll('[data-sector]').forEach(control => {
   const height = width * 1.3, gap = mobile ? 14 : 20;
   const rowWidth = cards.length * width + (cards.length-1) * gap;
   const left = Math.max(20,(hero.clientWidth-rowWidth)/2);
-  const top = Math.max(100,(hero.clientHeight-height)/2);
+  // Anchor the final row to its introduction instead of viewport center.
+  const headingBottom = galleryCopy.offsetTop + galleryCopy.offsetHeight;
+  const top = headingBottom + (mobile ? 24 : 32);
   cards.forEach((card,i) => {
    const elapsed = clamp((now-start-i*100)/1300);
    // Five opening scenes; the remaining cards pass through central waypoints.
