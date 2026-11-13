@@ -92,7 +92,7 @@ document.querySelectorAll('[data-sector]').forEach(control => {
   const left = Math.max(20,(hero.clientWidth-rowWidth)/2);
   // Anchor the final row to its introduction instead of viewport center.
   const headingBottom = galleryCopy.offsetTop + galleryCopy.offsetHeight;
-  const top = headingBottom + (mobile ? 24 : 32);
+  const top = headingBottom + (mobile ? 36 : 56);
   cards.forEach((card,i) => {
    const elapsed = clamp((now-start-i*100)/1300);
    // Five opening scenes; the remaining cards pass through central waypoints.
