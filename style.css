@@ -27,3 +27,9 @@ body{background:#fff}header{background:#f7f5f1e8;box-shadow:none}header nav>a{al
 /* A calm opening: further industries are introduced by scroll progress. */
 .hero-scroll-shell .scene:nth-child(n+6){visibility:hidden}
 .hero-scroll-shell .sector-nav{display:none}
+
+/* Reading hold, with restrained near/far motion around the stationary copy. */
+.hero-scroll-shell{height:270svh}
+.hero-scroll-shell .scene,.hero-scroll-shell .scene:hover{transform:perspective(1100px) translate3d(var(--scene-x,0px),var(--scene-y,0px),var(--scene-z,0px)) rotateX(var(--scene-rx,0deg)) rotateY(var(--scene-ry,0deg)) rotate(calc(var(--angle) * (1 - var(--row-turn,0))));will-change:transform}
+@media(max-width:650px){.hero-scroll-shell{height:240svh}}
+@media(prefers-reduced-motion:reduce){.hero-scroll-shell .scene,.hero-scroll-shell .scene:hover{transform:translate(var(--scene-x,0px),var(--scene-y,0px))!important}}
