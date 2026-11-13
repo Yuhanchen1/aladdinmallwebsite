@@ -53,7 +53,7 @@ motionPreference.addEventListener('change', () => {configureReveals(); queueScro
 queueScrollMotion();
 
 // Industry scenes are directly selectable, with a shared active state.
-const sectorNames = ['nail salons', 'wellness studios', 'pet groomers', 'auto services', 'barber shops'];
+const sectorNames = ['nail salons', 'wellness studios', 'pet groomers', 'auto services', 'barber shops', 'hair salons', 'massage studios', 'tattoo and piercing studios', 'fitness and recovery studios'];
 document.querySelectorAll('[data-sector]').forEach(control => {
   control.addEventListener('click', () => {
     const index = Number(control.dataset.sector);
@@ -80,10 +80,10 @@ document.querySelectorAll('[data-sector]').forEach(control => {
   const travel = shell.offsetHeight - hero.offsetHeight;
   const progress = clamp((88 - shell.getBoundingClientRect().top) / Math.max(1,travel));
   const t = progress * progress * (3 - 2 * progress);
-  const width = mobile ? 138 : Math.min(210,(hero.clientWidth-120)/5-20);
+  const width = mobile ? 138 : Math.max(150,Math.min(190,(hero.clientWidth-100)/cards.length-16));
   const height = width * 1.3, gap = mobile ? 14 : 20;
-  const rowWidth = 5 * width + 4 * gap;
-  const left = mobile ? 20 : (hero.clientWidth-rowWidth)/2;
+  const rowWidth = cards.length * width + (cards.length-1) * gap;
+  const left = Math.max(20,(hero.clientWidth-rowWidth)/2);
   const top = Math.max(100,(hero.clientHeight-height)/2);
   cards.forEach((card,i) => {
    const elapsed = clamp((now-start-i*100)/1300);
@@ -111,7 +111,8 @@ document.querySelectorAll('[data-sector]').forEach(control => {
   hero.querySelector('.sector-nav').style.opacity = '1';
   hero.querySelector('.sector-nav').style.visibility = progress >= .7 ? 'hidden' : 'visible';
   hero.classList.toggle('row-ready',progress>.95);
-  hero.style.overflowX = mobile && progress>.95 ? 'auto' : 'clip';
+  hero.style.overflowX = progress>.95 ? 'auto' : 'clip';
+  hero.querySelector('.scroll-cue').style.pointerEvents = progress>.95 ? 'none' : '';
   if(now-start<1900) frame=requestAnimationFrame(draw);
  }
  function measure(){
