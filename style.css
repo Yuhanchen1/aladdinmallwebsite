@@ -23,3 +23,7 @@ body{background:#fff}header{background:#f7f5f1e8;box-shadow:none}header nav>a{al
 
 /* Preserve the original Figma hero messaging with readable line wrapping. */
 .hero-scroll-shell .hero-copy h1{font-size:clamp(40px,4.2vw,60px);line-height:1.2;letter-spacing:-1.2px;max-width:800px}.hero-copy>p{max-width:632px;margin-left:auto;margin-right:auto;line-height:28px;font-size:18px}.hero-copy .checks{flex-wrap:wrap;justify-content:center}@media(max-width:650px){.hero-scroll-shell .hero-copy h1{font-size:36px;letter-spacing:-.8px}.hero-copy>p{font-size:15px;line-height:24px}.hero-copy .checks{gap:8px 12px;font-size:10px}}
+
+/* A calm opening: further industries are introduced by scroll progress. */
+.hero-scroll-shell .scene:nth-child(n+5){visibility:hidden}
+.hero-scroll-shell .sector-nav{display:none}
