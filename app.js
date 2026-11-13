@@ -96,8 +96,8 @@ document.querySelectorAll('[data-sector]').forEach(control => {
   cards.forEach((card,i) => {
    const elapsed = clamp((now-start-i*100)/1300);
    // Five opening scenes; the remaining cards pass through central waypoints.
-   const revealStart = .035 + Math.max(0,i-5)*.045;
-   const reveal = i < 5 ? 1 : clamp((rawProgress-revealStart)/.25);
+   const revealStart = .06 + Math.max(0,i-5)*.075;
+   const reveal = i < 5 ? 1 : clamp((progress-revealStart)/.16);
    const revealEase = reveal*reveal*(3-2*reveal);
    const entry = reduced.matches ? 0 : Math.pow(1-elapsed,4)*(1-t);
    const ease = v => {v=clamp(v);return v*v*v*(v*(v*6-15)+10);};
@@ -122,17 +122,17 @@ document.querySelectorAll('[data-sector]').forEach(control => {
    const depths = [95,-110,65,-75,-160,60,-85,75,-55];
    // Start well behind the copy plane, then ease forward into focus.
    const emergence = i < 5 ? elapsed : reveal;
-   const emergenceEase = emergence*emergence*(3-2*emergence);
-   const farZ = i < 5 ? -850 : -2200-(i-5)*150;
-   const z = reduced.matches ? 0 : farZ*(1-emergenceEase) + depths[i]*depthPhase*depthRelease + (i >= 5 ? Math.sin(Math.PI*emergence)*100 : 0);
-   const blur = reduced.matches ? 0 : (1-emergenceEase)*(i < 5 ? 2 : 5);
+   const emergenceEase = 1-Math.pow(1-emergence,3);
+   const farZ = i < 5 ? -650-entry*180 : -1050-(i-5)*100;
+   const z = reduced.matches ? 0 : farZ*(1-emergenceEase) + depths[i]*depthPhase*depthRelease;
+   const blur = reduced.matches ? 0 : (1-emergenceEase)*(i < 5 ? 5 : 9);
    card.style.filter = 'blur('+blur+'px)';
    card.style.zIndex = i >= 5 && emergence < .88 ? '1' : (i%2 ? '4' : '1');
    card.style.setProperty('--scene-z',z+'px');
    card.style.setProperty('--scene-rx',(reduced.matches ? 0 : -depthPhase*depthRelease*(i%2 ? 3 : -2))+'deg');
    card.style.setProperty('--scene-ry',(reduced.matches ? 0 : depthPhase*depthRelease*(i%2 ? -5 : 4)+(1-emergenceEase)*(i%2 ? 18 : -18))+'deg');
    card.style.setProperty('--row-turn',String(.7*spread+.3*gather));
-   card.style.setProperty('--scene-enter-opacity','1');
+   card.style.setProperty('--scene-enter-opacity',String((reduced.matches ? 1 : elapsed)*revealEase));
    card.style.setProperty('--scene-enter-scale','1');
    card.style.visibility = reveal > 0 ? 'visible' : 'hidden';
    card.style.pointerEvents = reveal > .8 ? '' : 'none';
