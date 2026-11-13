@@ -91,7 +91,7 @@ document.querySelectorAll('[data-sector]').forEach(control => {
    const x = left+i*(width+gap)-card.offsetLeft;
    const y = top-card.offsetTop;
    card.style.setProperty('--scene-x',`${x*t + entry*(i%2 ? 130 : -130)}px`);
-   card.style.setProperty('--scene-y',`${y*t-entry*80}px`);
+   card.style.setProperty('--scene-y',`${y*t + (reduced.matches ? 0 : Math.sin(Math.PI*t)*(i%2 ? 90 : 35))-entry*80}px`);
    card.style.setProperty('--scene-rx','0deg');card.style.setProperty('--scene-ry',`${(1-t)*entry*15}deg`);
    card.style.setProperty('--row-turn',`${t}`);
    card.style.setProperty('--scene-enter-opacity',String(reduced.matches ? 1 : elapsed));
@@ -99,19 +99,19 @@ document.querySelectorAll('[data-sector]').forEach(control => {
    card.style.width = `${card._w+(width-card._w)*t}px`;
    card.style.height = `${card._h+(height-card._h)*t}px`;
   });
-  galleryCopy.style.opacity = String(clamp((progress-.45)/.35));
-  galleryCopy.style.transform = `translateY(${(1-clamp((progress-.45)/.35))*18}px)`;
-  galleryCopy.style.visibility = progress > .45 ? 'visible' : 'hidden';
-  const copyExit = clamp(progress / .45);
-  copy.style.transform = `translateY(${reduced.matches ? 0 : -copyExit * (mobile ? 130 : 220)}px)`;
-  copy.style.opacity = String(1-copyExit);
+  galleryCopy.style.opacity = String(clamp((progress-.7)/.25));
+  galleryCopy.style.transform = `translateY(${(1-clamp((progress-.7)/.25))*18}px)`;
+  galleryCopy.style.visibility = progress > .7 ? 'visible' : 'hidden';
+  const copyExit = clamp(progress / .7);
+  copy.style.transform = `translateY(${reduced.matches ? 0 : -copyExit * (hero.clientHeight + copy.offsetHeight)}px)`;
+  copy.style.opacity = '1';
   const sectorNav = hero.querySelector('.sector-nav');
-  sectorNav.style.transform = `translateY(${reduced.matches ? 0 : -copyExit * 110}px)`;
-  copy.style.visibility = progress > .45 ? 'hidden' : 'visible';
-  hero.querySelector('.sector-nav').style.opacity = String(1-copyExit);
-  hero.querySelector('.sector-nav').style.visibility = progress > .45 ? 'hidden' : 'visible';
+  sectorNav.style.transform = `translateY(${reduced.matches ? 0 : -copyExit * (hero.clientHeight + 120)}px)`;
+  copy.style.visibility = progress >= .7 ? 'hidden' : 'visible';
+  hero.querySelector('.sector-nav').style.opacity = '1';
+  hero.querySelector('.sector-nav').style.visibility = progress >= .7 ? 'hidden' : 'visible';
   hero.classList.toggle('row-ready',progress>.95);
-  stage.style.overflowX = mobile && progress>.95 ? 'auto' : 'visible';
+  hero.style.overflowX = mobile && progress>.95 ? 'auto' : 'clip';
   if(now-start<1900) frame=requestAnimationFrame(draw);
  }
  function measure(){
