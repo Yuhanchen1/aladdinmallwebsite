@@ -37,3 +37,8 @@ body{background:#fff}header{background:#f7f5f1e8;box-shadow:none}header nav>a{al
 /* Depth emergence: scroll sets blur directly to keep focus in sync with Z. */
 .hero-scroll-shell .scene,.hero-scroll-shell .scene:hover{transition:box-shadow .3s;transform-origin:50% 50%}
 @media(prefers-reduced-motion:reduce){.hero-scroll-shell .scene{filter:none!important}}
+
+/* One shared camera: distant cards project toward the center then expand outward. */
+.hero-scroll-shell .world-hero{perspective:1000px;perspective-origin:50% 45%}
+.hero-scroll-shell .scene,.hero-scroll-shell .scene:hover{transform:translate3d(var(--scene-x,0px),var(--scene-y,0px),var(--scene-z,0px)) rotateX(var(--scene-rx,0deg)) rotateY(var(--scene-ry,0deg)) rotate(calc(var(--angle) * (1 - var(--row-turn,0))));opacity:1;transition:box-shadow .3s}
+@media(prefers-reduced-motion:reduce){.hero-scroll-shell .world-hero{perspective:none}.hero-scroll-shell .scene,.hero-scroll-shell .scene:hover{transform:translate(var(--scene-x,0px),var(--scene-y,0px))!important}}
