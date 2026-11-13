@@ -79,7 +79,12 @@ document.querySelectorAll('[data-sector]').forEach(control => {
   frame = 0;
   const mobile = innerWidth <= 650;
   const travel = shell.offsetHeight - hero.offsetHeight;
-  const progress = clamp((88 - shell.getBoundingClientRect().top) / Math.max(1,travel));
+  const rawProgress = clamp(((mobile ? 80 : 88) - shell.getBoundingClientRect().top) / Math.max(1,travel));
+  // Let visitors read while the scene changes depth before the copy exits.
+  const holdEnd = mobile ? .24 : .3;
+  const progress = clamp((rawProgress-holdEnd)/(1-holdEnd));
+  const depthPhase = Math.sin(Math.PI*clamp(rawProgress/holdEnd));
+  const depthRelease = 1-clamp(progress/.3);
   const t = progress * progress * (3 - 2 * progress);
   const width = mobile ? 138 : Math.max(150,Math.min(190,(hero.clientWidth-100)/cards.length-16));
   const height = width * 1.3, gap = mobile ? 14 : 20;
@@ -112,7 +117,11 @@ document.querySelectorAll('[data-sector]').forEach(control => {
    const moveY = midY+(top-midY)*gather-baseY-entry*65+(1-revealEase)*60;
    card.style.setProperty('--scene-x',moveX+'px');
    card.style.setProperty('--scene-y',moveY+'px');
-   card.style.setProperty('--scene-rx','0deg');card.style.setProperty('--scene-ry','0deg');
+   const depths = [95,-110,65,-75,-160,60,-85,75,-55];
+   const z = reduced.matches ? 0 : depths[i]*depthPhase*depthRelease;
+   card.style.setProperty('--scene-z',z+'px');
+   card.style.setProperty('--scene-rx',(reduced.matches ? 0 : -depthPhase*depthRelease*(i%2 ? 3 : -2))+'deg');
+   card.style.setProperty('--scene-ry',(reduced.matches ? 0 : depthPhase*depthRelease*(i%2 ? -5 : 4))+'deg');
    card.style.setProperty('--row-turn',String(.7*spread+.3*gather));
    card.style.setProperty('--scene-enter-opacity',String((reduced.matches ? 1 : elapsed)*revealEase));
    card.style.setProperty('--scene-enter-scale','1');
@@ -123,7 +132,8 @@ document.querySelectorAll('[data-sector]').forEach(control => {
   galleryCopy.style.opacity = String(clamp((progress-.7)/.25));
   galleryCopy.style.transform = `translateY(${(1-clamp((progress-.7)/.25))*18}px)`;
   galleryCopy.style.visibility = progress > .7 ? 'visible' : 'hidden';
-  const copyExit = clamp(progress / .7);
+  const copyExitRaw = clamp((progress-.06)/.64);
+  const copyExit = copyExitRaw*copyExitRaw*(3-2*copyExitRaw);
   copy.style.transform = `translateY(${reduced.matches ? 0 : -copyExit * (hero.clientHeight + copy.offsetHeight)}px)`;
   copy.style.opacity = '1';
   const sectorNav = hero.querySelector('.sector-nav');
