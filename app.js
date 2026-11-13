@@ -70,6 +70,7 @@ document.querySelectorAll('[data-sector]').forEach(control => {
  const shell = hero.parentElement, stage = hero.querySelector('.scene-stage');
  const cards = [...hero.querySelectorAll('.scene')];
  const copy = hero.querySelector('.hero-copy');
+ const galleryCopy = hero.querySelector('.gallery-copy');
  const reduced = motionPreference;
  let frame = 0, start = performance.now();
  const clamp = v => Math.max(0,Math.min(1,v));
@@ -98,6 +99,9 @@ document.querySelectorAll('[data-sector]').forEach(control => {
    card.style.width = `${card._w+(width-card._w)*t}px`;
    card.style.height = `${card._h+(height-card._h)*t}px`;
   });
+  galleryCopy.style.opacity = String(clamp((progress-.45)/.35));
+  galleryCopy.style.transform = `translateY(${(1-clamp((progress-.45)/.35))*18}px)`;
+  galleryCopy.style.visibility = progress > .45 ? 'visible' : 'hidden';
   copy.style.opacity = String(1-clamp(progress*2.5));
   copy.style.visibility = progress > .45 ? 'hidden' : 'visible';
   hero.querySelector('.sector-nav').style.opacity = String(1-t);
