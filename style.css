@@ -211,3 +211,12 @@ body main small,body .hero-copy small,body .gallery-copy small{letter-spacing:0}
 body .hero-scroll-shell .world-hero.row-ready .scene>span{
  font-size:18px;line-height:28px;color:#1d2939;
 }
+
+/* Consistent action-button typography across desktop and mobile. */
+body header nav button,
+body .hero-scroll-shell .hero-copy .primary,
+body main button:not(.scene),
+body .app-grid .store,
+body dialog form button:not(.close){
+ font-family:Poppins,Arial,sans-serif;font-size:16px;line-height:24px;font-weight:600;
+}
