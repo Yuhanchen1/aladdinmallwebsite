@@ -101,8 +101,8 @@ document.querySelectorAll('[data-sector]').forEach(control => {
    const revealEase = reveal*reveal*(3-2*reveal);
    const entry = reduced.matches ? 0 : Math.pow(1-elapsed,4)*(1-t);
    const ease = v => {v=clamp(v);return v*v*v*(v*(v*6-15)+10);};
-   const spread = ease(progress/.5);
-   const gather = ease((progress-.58)/.42);
+   const spread = ease(progress/.4);
+   const gather = ease((progress-.4)/.32);
    // Alternating lanes preserve left-to-right order throughout the transition.
    const midWidth = Math.min(mobile ? 70 : 165,hero.clientWidth/6);
    const midHeight = midWidth*1.3;
@@ -138,9 +138,9 @@ document.querySelectorAll('[data-sector]').forEach(control => {
    card.style.pointerEvents = reveal > .8 ? '' : 'none';
    card.tabIndex = reveal > .8 ? 0 : -1;
   });
-  galleryCopy.style.opacity = String(clamp((progress-.7)/.25));
+  galleryCopy.style.opacity = String(clamp((progress-.58)/.14));
   galleryCopy.style.transform = `translateY(${(1-clamp((progress-.7)/.25))*18}px)`;
-  galleryCopy.style.visibility = progress > .7 ? 'visible' : 'hidden';
+  galleryCopy.style.visibility = progress > .58 ? 'visible' : 'hidden';
   const copyExitRaw = clamp((progress-.06)/.64);
   const copyExit = copyExitRaw*copyExitRaw*(3-2*copyExitRaw);
   copy.style.transform = `translateY(${reduced.matches ? 0 : -copyExit * (hero.clientHeight + copy.offsetHeight)}px)`;
@@ -150,9 +150,9 @@ document.querySelectorAll('[data-sector]').forEach(control => {
   copy.style.visibility = progress >= .7 ? 'hidden' : 'visible';
   hero.querySelector('.sector-nav').style.opacity = '1';
   hero.querySelector('.sector-nav').style.visibility = progress >= .7 ? 'hidden' : 'visible';
-  hero.classList.toggle('row-ready',progress>.95);
-  hero.style.overflowX = progress>.95 ? 'auto' : 'clip';
-  hero.querySelector('.scroll-cue').style.pointerEvents = progress>.95 ? 'none' : '';
+  hero.classList.toggle('row-ready',progress>.74);
+  hero.style.overflowX = progress>.74 ? 'auto' : 'clip';
+  hero.querySelector('.scroll-cue').style.pointerEvents = progress>.74 ? 'none' : '';
   if(now-start<1400+cards.length*100) frame=requestAnimationFrame(draw);
  }
  function measure(){
