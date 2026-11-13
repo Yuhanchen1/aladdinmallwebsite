@@ -147,7 +147,11 @@ document.querySelectorAll('[data-sector]').forEach(control => {
   hero.querySelector('.sector-nav').style.opacity = '1';
   hero.querySelector('.sector-nav').style.visibility = progress >= .7 ? 'hidden' : 'visible';
   hero.classList.toggle('row-ready',progress>.74);
-  hero.style.overflowX = progress>.74 ? 'auto' : 'clip';
+  hero.style.overflowX = 'clip';
+  stage.tabIndex = progress>.74 ? 0 : -1;
+  stage.setAttribute('role','region');
+  stage.setAttribute('aria-label','Industry cards, scroll horizontally to explore');
+  if(progress<=.74) stage.scrollLeft=0;
   hero.querySelector('.scroll-cue').style.pointerEvents = progress>.74 ? 'none' : '';
   if(now-start<1400+cards.length*100) frame=requestAnimationFrame(draw);
  }
