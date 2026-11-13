@@ -115,15 +115,22 @@ document.querySelectorAll('[data-sector]').forEach(control => {
    const midX = baseX+(laneX-baseX)*spread;
    const midY = baseY+(laneY-baseY)*spread;
    const targetX = left+i*(width+gap);
-   const moveX = midX+(targetX-midX)*gather-baseX+entry*(i%2 ? 100 : -100);
-   const moveY = midY+(top-midY)*gather-baseY-entry*65+(1-revealEase)*60;
+   const moveX = midX+(targetX-midX)*gather-baseX;
+   const moveY = midY+(top-midY)*gather-baseY;
    card.style.setProperty('--scene-x',moveX+'px');
    card.style.setProperty('--scene-y',moveY+'px');
    const depths = [95,-110,65,-75,-160,60,-85,75,-55];
-   const z = reduced.matches ? 0 : depths[i]*depthPhase*depthRelease;
+   // Start well behind the copy plane, then ease forward into focus.
+   const emergence = i < 5 ? elapsed : reveal;
+   const emergenceEase = 1-Math.pow(1-emergence,3);
+   const farZ = i < 5 ? -650-entry*180 : -1050-(i-5)*100;
+   const z = reduced.matches ? 0 : farZ*(1-emergenceEase) + depths[i]*depthPhase*depthRelease;
+   const blur = reduced.matches ? 0 : (1-emergenceEase)*(i < 5 ? 5 : 9);
+   card.style.filter = 'blur('+blur+'px)';
+   card.style.zIndex = i >= 5 && emergence < .88 ? '1' : (i%2 ? '4' : '1');
    card.style.setProperty('--scene-z',z+'px');
    card.style.setProperty('--scene-rx',(reduced.matches ? 0 : -depthPhase*depthRelease*(i%2 ? 3 : -2))+'deg');
-   card.style.setProperty('--scene-ry',(reduced.matches ? 0 : depthPhase*depthRelease*(i%2 ? -5 : 4))+'deg');
+   card.style.setProperty('--scene-ry',(reduced.matches ? 0 : depthPhase*depthRelease*(i%2 ? -5 : 4)+(1-emergenceEase)*(i%2 ? 18 : -18))+'deg');
    card.style.setProperty('--row-turn',String(.7*spread+.3*gather));
    card.style.setProperty('--scene-enter-opacity',String((reduced.matches ? 1 : elapsed)*revealEase));
    card.style.setProperty('--scene-enter-scale','1');
