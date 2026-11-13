@@ -37,3 +37,5 @@ body{background:#fff}header{background:#f7f5f1e8;box-shadow:none}header nav>a{al
 /* Depth emergence: scroll sets blur directly to keep focus in sync with Z. */
 .hero-scroll-shell .scene,.hero-scroll-shell .scene:hover{transition:box-shadow .3s;transform-origin:50% 50%}
 @media(prefers-reduced-motion:reduce){.hero-scroll-shell .scene{filter:none!important}}
+
+header .logo{font-weight:600}
