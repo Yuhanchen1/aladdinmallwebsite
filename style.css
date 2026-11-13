@@ -204,3 +204,10 @@ body .hero-scroll-shell .hero-copy .checks li::before{
 }
 .hero-scroll-shell .world-hero.row-ready .scene-stage::-webkit-scrollbar{display:none}
 .hero-scroll-shell .world-hero.row-ready .scroll-cue{display:none}
+
+/* Labels use natural tracking; gallery card names use the requested scale. */
+body main small,body .hero-copy small,body .gallery-copy small{letter-spacing:0}
+.hero-scroll-shell .scroll-cue{display:none}
+body .hero-scroll-shell .world-hero.row-ready .scene>span{
+ font-size:18px;line-height:28px;color:#1d2939;
+}
