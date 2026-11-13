@@ -57,7 +57,8 @@ const sectorNames = ['nail salons', 'wellness studios', 'pet groomers', 'auto se
 document.querySelectorAll('[data-sector]').forEach(control => {
   control.addEventListener('click', () => {
     const index = Number(control.dataset.sector);
-    document.querySelector('#sector-name').textContent = sectorNames[index];
+    const sectorName = document.querySelector('#sector-name');
+    if (sectorName) sectorName.textContent = sectorNames[index];
     document.querySelectorAll('.sector-nav button').forEach(button => button.setAttribute('aria-pressed', String(Number(button.dataset.sector) === index)));
     document.querySelectorAll('.scene').forEach(scene => scene.classList.toggle('active', Number(scene.dataset.sector) === index));
   });
