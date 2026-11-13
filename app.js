@@ -91,8 +91,11 @@ document.querySelectorAll('[data-sector]').forEach(control => {
   const rowWidth = cards.length * width + (cards.length-1) * gap;
   const left = Math.max(20,(hero.clientWidth-rowWidth)/2);
   // Anchor the final row to its introduction instead of viewport center.
-  const headingBottom = galleryCopy.offsetTop + galleryCopy.offsetHeight;
-  const top = headingBottom + (mobile ? 36 : 56);
+  const galleryGap = mobile ? 36 : 56;
+  const groupHeight = galleryCopy.offsetHeight + galleryGap + height;
+  const groupTop = Math.max(28,(hero.clientHeight-groupHeight)/2);
+  galleryCopy.style.top = groupTop+'px';
+  const top = groupTop + galleryCopy.offsetHeight + galleryGap;
   cards.forEach((card,i) => {
    const elapsed = clamp((now-start-i*100)/1300);
    // Five opening scenes; the remaining cards pass through central waypoints.
