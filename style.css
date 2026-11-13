@@ -118,3 +118,16 @@ header.scrolled{background:rgba(250,248,255,.94)}
  .hero-scroll-shell .hero-copy h1 em::before{animation:none;transform:scaleX(1) rotate(-1.5deg)}
  .hero-scroll-shell .hero-copy h1 em::after{display:none}
 }
+
+/* Shared H2 type scale across every section and responsive breakpoint. */
+:root{--heading-two-size:40px}
+body h2,body .gallery-copy h2,body .split h2,body .cta h2,body dialog h2{
+ font-size:var(--heading-two-size);font-weight:600;line-height:1.4;letter-spacing:-.02em;
+}
+@media(max-width:1000px){:root{--heading-two-size:32px}}
+@media(max-width:650px){:root{--heading-two-size:28px}}
+.hero-copy .primary{
+ display:inline-flex;align-items:center;justify-content:center;gap:20px;
+ line-height:24px;vertical-align:middle;text-align:center;
+}
+.hero-copy .primary span{display:inline-flex;align-items:center;justify-content:center;margin-left:0;line-height:1}
