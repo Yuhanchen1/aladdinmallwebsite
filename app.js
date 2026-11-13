@@ -81,7 +81,7 @@ document.querySelectorAll('[data-sector]').forEach(control => {
   const travel = shell.offsetHeight - hero.offsetHeight;
   const rawProgress = clamp(((mobile ? 80 : 88) - shell.getBoundingClientRect().top) / Math.max(1,travel));
   // Let visitors read while the scene changes depth before the copy exits.
-  const holdEnd = mobile ? .24 : .3;
+  const holdEnd = mobile ? .34 : .4;
   const progress = clamp((rawProgress-holdEnd)/(1-holdEnd));
   const depthPhase = Math.sin(Math.PI*clamp(rawProgress/holdEnd));
   const depthRelease = 1-clamp(progress/.3);
@@ -98,12 +98,12 @@ document.querySelectorAll('[data-sector]').forEach(control => {
   const top = groupTop + galleryCopy.offsetHeight + galleryGap;
   cards.forEach((card,i) => {
    const elapsed = clamp((now-start-i*100)/1300);
-   // Five opening scenes; the remaining cards pass through central waypoints.
-   const revealStart = .06 + Math.max(0,i-5)*.075;
-   const reveal = i < 5 ? 1 : clamp((progress-revealStart)/.16);
-   const revealEase = reveal*reveal*(3-2*reveal);
-   const entry = reduced.matches ? 0 : Math.pow(1-elapsed,4)*(1-t);
    const ease = v => {v=clamp(v);return v*v*v*(v*(v*6-15)+10);};
+   const firstOut = ease((rawProgress-.04)/.1);
+   const secondIn = ease((rawProgress-.15)/.13);
+   const galleryReturn = ease((progress-.08)/.25);
+   const visibility = i < 5 ? 1-firstOut+firstOut*galleryReturn : secondIn;
+   const batchScale = reduced.matches ? 1 : .3+.7*visibility;
    const spread = ease(progress/.4);
    const gather = ease((progress-.4)/.32);
    // Alternating lanes preserve left-to-right order throughout the transition.
@@ -122,24 +122,17 @@ document.querySelectorAll('[data-sector]').forEach(control => {
    const moveY = midY+(top-midY)*gather-baseY;
    card.style.setProperty('--scene-x',moveX+'px');
    card.style.setProperty('--scene-y',moveY+'px');
-   const depths = [95,-110,65,-75,-160,60,-85,75,-55];
-   // Start well behind the copy plane, then ease forward into focus.
-   const emergence = i < 5 ? elapsed : reveal;
-   const emergenceEase = 1-Math.pow(1-emergence,3);
-   const farZ = i < 5 ? -650-entry*180 : -1050-(i-5)*100;
-   const z = reduced.matches ? 0 : farZ*(1-emergenceEase) + depths[i]*depthPhase*depthRelease;
-   const blur = reduced.matches ? 0 : (1-emergenceEase)*(i < 5 ? 5 : 9);
-   card.style.filter = 'blur('+blur+'px)';
-   card.style.zIndex = i >= 5 && emergence < .88 ? '1' : (i%2 ? '4' : '1');
-   card.style.setProperty('--scene-z',z+'px');
-   card.style.setProperty('--scene-rx',(reduced.matches ? 0 : -depthPhase*depthRelease*(i%2 ? 3 : -2))+'deg');
-   card.style.setProperty('--scene-ry',(reduced.matches ? 0 : depthPhase*depthRelease*(i%2 ? -5 : 4)+(1-emergenceEase)*(i%2 ? 18 : -18))+'deg');
+   card.style.filter = 'none';
+   card.style.zIndex = i%2 ? '4' : '1';
+   card.style.setProperty('--scene-z','0px');
+   card.style.setProperty('--scene-rx','0deg');
+   card.style.setProperty('--scene-ry','0deg');
    card.style.setProperty('--row-turn',String(.7*spread+.3*gather));
-   card.style.setProperty('--scene-enter-opacity',String((reduced.matches ? 1 : elapsed)*revealEase));
-   card.style.setProperty('--scene-enter-scale','1');
-   card.style.visibility = reveal > 0 ? 'visible' : 'hidden';
-   card.style.pointerEvents = reveal > .8 ? '' : 'none';
-   card.tabIndex = reveal > .8 ? 0 : -1;
+   card.style.setProperty('--batch-opacity',String(visibility));
+   card.style.setProperty('--batch-scale',String(batchScale));
+   card.style.visibility = visibility > .005 ? 'visible' : 'hidden';
+   card.style.pointerEvents = visibility > .8 ? '' : 'none';
+   card.tabIndex = visibility > .8 ? 0 : -1;
   });
   galleryCopy.style.opacity = String(clamp((progress-.58)/.14));
   galleryCopy.style.transform = `translateY(${(1-clamp((progress-.7)/.25))*18}px)`;
