@@ -120,7 +120,22 @@ document.querySelectorAll('[data-sector]').forEach(control => {
    const midY = baseY+(laneY-baseY)*spread;
    const targetX = left+i*(width+gap);
    const moveX = midX+(targetX-midX)*gather-baseX;
-   const moveY = midY+(top-midY)*gather-baseY;
+   let moveY = midY+(top-midY)*gather-baseY;
+   // Reserve a clear rectangle around the exiting CTA and benefit list.
+   const exitP = clamp((progress-.06)/.64);
+   const exitEase = exitP*exitP*(3-2*exitP);
+   const copyBottom = copy.offsetTop+copy.offsetHeight-(reduced.matches ? 0 : exitEase*(hero.clientHeight+copy.offsetHeight));
+   const copyLeft = copy.offsetLeft, copyRight = copyLeft+copy.offsetWidth;
+   const cardLeft = baseX+moveX, cardRight = cardLeft+cardWidth;
+   const horizontalDistance = Math.max(copyLeft-cardRight,cardLeft-copyRight);
+   const clearanceWeight = ease((64-horizontalDistance)/64);
+   if(copyBottom > 0 && progress < .7) {
+    const safeY = copyBottom+28;
+    const cardTop = baseY+moveY;
+    const cardBottom = cardTop+cardHeight;
+    const copyTop = copyBottom-copy.offsetHeight;
+    if(cardBottom > copyTop-24) moveY += Math.max(0,safeY-cardTop)*clearanceWeight;
+   }
    card.style.setProperty('--scene-x',moveX+'px');
    card.style.setProperty('--scene-y',moveY+'px');
    card.style.filter = 'none';
