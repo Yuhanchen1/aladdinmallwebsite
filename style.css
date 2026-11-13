@@ -70,3 +70,12 @@ header.scrolled{background:rgba(250,248,255,.94)}
    linear-gradient(145deg,#fcfaff,#f7f2ff 55%,#f0e8fc);
  }
 }
+
+/* Scroll-driven batch replacement, without in-place depth oscillation. */
+.hero-scroll-shell .scene,.hero-scroll-shell .scene:hover{transform:translate(var(--scene-x,0px),var(--scene-y,0px)) rotate(calc(var(--angle) * (1 - var(--row-turn,0)))) scale(var(--batch-scale,1));opacity:var(--batch-opacity,1);filter:none!important;transition:box-shadow .25s}
+.hero-scroll-shell .scene-5{left:6%;top:9%;width:178px;height:235px}
+.hero-scroll-shell .scene-6{right:9%;top:4%;width:155px;height:195px}
+.hero-scroll-shell .scene-7{left:12%;bottom:12%;width:150px;height:180px}
+.hero-scroll-shell .scene-8{right:5%;top:auto;bottom:15%;width:195px;height:250px}
+@media(max-width:650px){.hero-scroll-shell .scene-5{left:5%;top:22px;width:88px;height:108px}.hero-scroll-shell .scene-6{right:7%;top:24px;width:85px;height:100px}.hero-scroll-shell .scene-7{left:5%;bottom:125px;width:100px;height:120px}.hero-scroll-shell .scene-8{right:4%;bottom:130px;width:100px;height:130px}}
+@media(prefers-reduced-motion:reduce){.hero-scroll-shell .scene,.hero-scroll-shell .scene:hover{transform:translate(var(--scene-x,0px),var(--scene-y,0px))!important}}
