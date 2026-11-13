@@ -147,3 +147,7 @@ body h2,body .gallery-copy h2,body .split h2,body .cta h2,body dialog h2{
  position:absolute;inset:0;width:100%;height:100%;z-index:-1;
  pointer-events:none;image-rendering:auto;
 }
+
+/* Keep the industry gallery white as the opening light field recedes. */
+.hero-scroll-shell{background:#fff}
+.hero-scroll-shell .world-hero.row-ready>.lavender-atmosphere{opacity:0!important}
