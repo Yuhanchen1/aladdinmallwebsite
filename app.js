@@ -73,10 +73,14 @@ document.querySelectorAll('[data-sector]').forEach(control => {
  const copy = hero.querySelector('.hero-copy');
  const galleryCopy = hero.querySelector('.gallery-copy');
  const reduced = motionPreference;
- let frame = 0, start = performance.now();
+ let frame = 0, start = performance.now(), previousFrame = 0;
+ const verticalPositions = new Map();
  const clamp = v => Math.max(0,Math.min(1,v));
  function draw(now) {
   frame = 0;
+  const dt = Math.min(40, Math.max(1, now-(previousFrame || now-16)));
+  previousFrame = now;
+  let settling = false;
   const mobile = innerWidth <= 650;
   const travel = shell.offsetHeight - hero.offsetHeight;
   const rawProgress = clamp(((mobile ? 80 : 88) - shell.getBoundingClientRect().top) / Math.max(1,travel));
@@ -129,13 +133,19 @@ document.querySelectorAll('[data-sector]').forEach(control => {
    const cardLeft = baseX+moveX, cardRight = cardLeft+cardWidth;
    const horizontalDistance = Math.max(copyLeft-cardRight,cardLeft-copyRight);
    const clearanceWeight = ease((64-horizontalDistance)/64);
-   if(copyBottom > 0 && progress < .7) {
-    const safeY = copyBottom+28;
-    const cardTop = baseY+moveY;
-    const cardBottom = cardTop+cardHeight;
-    const copyTop = copyBottom-copy.offsetHeight;
-    if(cardBottom > copyTop-24) moveY += Math.max(0,safeY-cardTop)*clearanceWeight;
-   }
+   const safeY = copyBottom+28;
+   const cardTop = baseY+moveY;
+   const cardBottom = cardTop+cardHeight;
+   const copyTop = copyBottom-copy.offsetHeight;
+   // Blend the collision boundary instead of switching displacement on at once.
+   const verticalWeight = ease((cardBottom-copyTop+48)/144);
+   const exitWeight = 1-ease((progress-.55)/.15);
+   moveY += Math.max(0,safeY-cardTop)*clearanceWeight*verticalWeight*exitWeight;
+   const currentY = verticalPositions.get(card) ?? moveY;
+   const nextY = reduced.matches ? moveY : currentY+(moveY-currentY)*(1-Math.exp(-dt/110));
+   if(Math.abs(nextY-moveY)>.15) settling=true;
+   verticalPositions.set(card,nextY);
+   moveY=nextY;
    card.style.setProperty('--scene-x',moveX+'px');
    card.style.setProperty('--scene-y',moveY+'px');
    card.style.filter = 'none';
@@ -170,7 +180,7 @@ document.querySelectorAll('[data-sector]').forEach(control => {
   stage.setAttribute('aria-label','Industry cards, scroll horizontally to explore');
   if(progress<=.74) stage.scrollLeft=0;
   hero.querySelector('.scroll-cue').style.pointerEvents = progress>.74 ? 'none' : '';
-  if(now-start<1400+cards.length*100) frame=requestAnimationFrame(draw);
+  if(now-start<1400+cards.length*100 || settling) frame=requestAnimationFrame(draw);
  }
  function measure(){
   cards.forEach(card=>{card.style.width='';card.style.height='';card._w=card.offsetWidth;card._h=card.offsetHeight;});queue();
