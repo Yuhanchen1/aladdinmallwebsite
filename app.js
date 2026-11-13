@@ -88,15 +88,27 @@ document.querySelectorAll('[data-sector]').forEach(control => {
   const top = Math.max(100,(hero.clientHeight-height)/2);
   cards.forEach((card,i) => {
    const elapsed = clamp((now-start-i*100)/1300);
-   // Four anchor scenes at rest; discover the other industries while scrolling.
-   const revealStart = .1 + Math.max(0,i-4)*.085;
-   const reveal = i < 4 ? 1 : clamp((progress-revealStart)/.2);
+   // Five opening scenes; the remaining cards pass through central waypoints.
+   const revealStart = .06 + Math.max(0,i-5)*.075;
+   const reveal = i < 5 ? 1 : clamp((progress-revealStart)/.16);
    const revealEase = reveal*reveal*(3-2*reveal);
    const entry = reduced.matches ? 0 : Math.pow(1-elapsed,4)*(1-t);
    const x = left+i*(width+gap)-card.offsetLeft;
    const y = top-card.offsetTop;
-   card.style.setProperty('--scene-x',`${x*t + entry*(i%2 ? 130 : -130) + (1-revealEase)*(i%2 ? 85 : -85)}px`);
-   card.style.setProperty('--scene-y',`${y*t + (reduced.matches ? 0 : Math.sin(Math.PI*t)*(i%2 ? 90 : 35))-entry*80 + (1-revealEase)*150}px`);
+   let moveX = x*t + entry*(i%2 ? 130 : -130) + (1-revealEase)*(i%2 ? 85 : -85);
+   let moveY = y*t + (reduced.matches ? 0 : Math.sin(Math.PI*t)*(i%2 ? 90 : 35))-entry*80 + (1-revealEase)*150;
+   if (i >= 5 && !reduced.matches) {
+    const passage = clamp((progress-.08)/.84);
+    const centralWeight = Math.pow(Math.sin(Math.PI*passage),2);
+    const centers = [[.38,.57],[.65,.45],[.49,.75],[.7,.7]];
+    const [cx,cy] = centers[i-5];
+    const centralX = hero.clientWidth*cx-card.offsetLeft-card.offsetWidth/2;
+    const centralY = hero.clientHeight*cy-card.offsetTop-card.offsetHeight/2;
+    moveX += (centralX-moveX)*centralWeight;
+    moveY += (centralY-moveY)*centralWeight;
+   }
+   card.style.setProperty('--scene-x',`${moveX}px`);
+   card.style.setProperty('--scene-y',`${moveY}px`);
    card.style.setProperty('--scene-rx','0deg');card.style.setProperty('--scene-ry',`${(1-t)*entry*15}deg`);
    card.style.setProperty('--row-turn',`${t}`);
    card.style.setProperty('--scene-enter-opacity',String((reduced.matches ? 1 : elapsed)*revealEase));
