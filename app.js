@@ -213,7 +213,8 @@ document.querySelectorAll('[data-sector]').forEach(control => {
   if(bounds.bottom<0||bounds.top>innerHeight)return;
   const dt=previous?Math.min(now-previous,100):50;previous=now;last=now;
   const progress=clamp(((innerWidth<=650?80:88)-bounds.top)/Math.max(1,shell.offsetHeight-hero.offsetHeight));
-  const p=smooth(progress),target=[.38+1.12*p,.36+.84*p,.22-.1*p];
+  canvas.style.opacity=String(1-smooth((progress-.46)/.24));
+  const p=smooth(progress),target=[.38+.35*p,.36+.18*p,.22-.04*p];
   const intro=reduced.matches?1:smooth((now-started)/1800);
   const follow=1-Math.exp(-dt/450);
   current=current.map((v,i)=>intro<1?[-.3,.3,.22][i]+(target[i]-[-.3,.3,.22][i])*intro:v+(target[i]-v)*follow);
@@ -233,7 +234,7 @@ document.querySelectorAll('[data-sector]').forEach(control => {
    }
    if(py<tip&&px<half*aspect*Math.pow(1-py/tip,.72))d=-d;
    const g=1-smooth((d-.25+soft)/(2*soft));
-   const col=g<.38?mix([255,255,255],[234,222,252],smooth(g/.38)):mix([234,222,252],[205,180,240],smooth((g-.38)/.62));
+   const col=g<.38?mix([255,255,255],[245,239,253],smooth(g/.38)):mix([245,239,253],[232,219,249],smooth((g-.38)/.62));
    const idx=(y*96+x)*4;
    pixels.data[idx]=col[0];pixels.data[idx+1]=col[1];pixels.data[idx+2]=col[2];pixels.data[idx+3]=255;
   }
