@@ -197,3 +197,10 @@ body .hero-scroll-shell .hero-copy .checks li{display:inline-flex;align-items:ce
 body .hero-scroll-shell .hero-copy .checks li::before{
  flex-shrink:0;width:18px;height:18px;margin-right:8px;font-size:12px;line-height:18px;
 }
+
+/* Hide gallery scroll chrome while preserving horizontal navigation. */
+.hero-scroll-shell .world-hero.row-ready .scene-stage{
+ scrollbar-width:none;-ms-overflow-style:none;
+}
+.hero-scroll-shell .world-hero.row-ready .scene-stage::-webkit-scrollbar{display:none}
+.hero-scroll-shell .world-hero.row-ready .scroll-cue{display:none}
