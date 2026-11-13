@@ -86,12 +86,12 @@ document.querySelectorAll('[data-sector]').forEach(control => {
   const depthPhase = Math.sin(Math.PI*clamp(rawProgress/holdEnd));
   const depthRelease = 1-clamp(progress/.3);
   const t = progress * progress * (3 - 2 * progress);
-  const width = mobile ? 138 : Math.max(150,Math.min(190,(hero.clientWidth-100)/cards.length-16));
-  const height = width * 1.3, gap = mobile ? 14 : 20;
+  const width = mobile ? 180 : Math.min(260,Math.max(220,hero.clientWidth*.15));
+  const height = width * 1.3, gap = mobile ? 18 : 24;
   const rowWidth = cards.length * width + (cards.length-1) * gap;
   const left = Math.max(20,(hero.clientWidth-rowWidth)/2);
   // Anchor the final row to its introduction instead of viewport center.
-  const galleryGap = mobile ? 36 : 56;
+  const galleryGap = mobile ? 48 : 72;
   const groupHeight = galleryCopy.offsetHeight + galleryGap + height;
   const groupTop = Math.max(28,(hero.clientHeight-groupHeight)/2);
   galleryCopy.style.top = groupTop+'px';
