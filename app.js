@@ -102,10 +102,14 @@ document.querySelectorAll('[data-sector]').forEach(control => {
   galleryCopy.style.opacity = String(clamp((progress-.45)/.35));
   galleryCopy.style.transform = `translateY(${(1-clamp((progress-.45)/.35))*18}px)`;
   galleryCopy.style.visibility = progress > .45 ? 'visible' : 'hidden';
-  copy.style.opacity = String(1-clamp(progress*2.5));
+  const copyExit = clamp(progress / .45);
+  copy.style.transform = `translateY(${reduced.matches ? 0 : -copyExit * (mobile ? 130 : 220)}px)`;
+  copy.style.opacity = String(1-copyExit);
+  const sectorNav = hero.querySelector('.sector-nav');
+  sectorNav.style.transform = `translateY(${reduced.matches ? 0 : -copyExit * 110}px)`;
   copy.style.visibility = progress > .45 ? 'hidden' : 'visible';
-  hero.querySelector('.sector-nav').style.opacity = String(1-t);
-  hero.querySelector('.sector-nav').style.visibility = progress > .8 ? 'hidden' : 'visible';
+  hero.querySelector('.sector-nav').style.opacity = String(1-copyExit);
+  hero.querySelector('.sector-nav').style.visibility = progress > .45 ? 'hidden' : 'visible';
   hero.classList.toggle('row-ready',progress>.95);
   stage.style.overflowX = mobile && progress>.95 ? 'auto' : 'visible';
   if(now-start<1900) frame=requestAnimationFrame(draw);
