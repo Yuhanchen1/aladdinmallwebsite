@@ -63,61 +63,53 @@ document.querySelectorAll('[data-sector]').forEach(control => {
   });
 });
 
-// Each scene has its own depth, inertia and scroll velocity.
+// Scroll choreography: scattered scenes converge into a usable preview row.
 (() => {
-  const hero = document.querySelector('.world-hero');
-  if (!hero) return;
-  const cards = [...hero.querySelectorAll('.scene')];
-  const depths = [1, .65, .8, 1.2, .3];
-  const states = cards.map(() => ({x:0,y:0}));
-  const entranceDirections = [-1, 1, -1, 1, -1];
-  let pointer = {x:0,y:0}, frame = 0, last = 0, start = performance.now(), visible = true;
-  const fine = matchMedia('(hover:hover) and (pointer:fine)');
-  function reset() {
-    cancelAnimationFrame(frame); frame = 0;
-    cards.forEach(card => ['--scene-x','--scene-y','--scene-rx','--scene-ry','--scene-enter-opacity','--scene-enter-scale'].forEach(key => card.style.removeProperty(key)));
-  }
-  function tick(now) {
-    frame = 0;
-    if (motionPreference.matches || document.hidden || !visible) return;
-    const dt = Math.min(40, now - (last || now)); last = now;
-    const rect = hero.getBoundingClientRect();
-    const mobile = innerWidth <= 650;
-    const scroll = Math.max(0, -rect.top);
-    const elapsed = now - start;
-    cards.forEach((card, i) => {
-      const depth = depths[i], phase = i * 1.73;
-      const progress = Math.max(0, Math.min(1, (elapsed - i * 110) / 1400));
-      const remaining = Math.pow(1 - progress, 4);
-      const drift = Math.sin(now / (4200 + i * 360) + phase);
-      const targetX = pointer.x * 12 * depth + remaining * entranceDirections[i] * (mobile ? 65 : 180);
-      // More than 1px per scroll pixel offsets normal document movement,
-      // so the cards travel DOWN the viewport as the user scrolls down.
-      const targetY = pointer.y * 8 * depth + scroll * (1.18 + depth * .32) - remaining * (mobile ? 50 : 120);
-      card.style.setProperty('--scene-enter-opacity', String(progress));
-      card.style.setProperty('--scene-enter-scale', String(1 - remaining * .16));
-      const blend = 1 - Math.exp(-dt / (150 + i * 35));
-      states[i].x += (targetX - states[i].x) * blend;
-      states[i].y += (targetY - states[i].y) * blend;
-      card.style.setProperty('--scene-x', `${states[i].x}px`);
-      card.style.setProperty('--scene-y', `${states[i].y}px`);
-      card.style.setProperty('--scene-rx', `${mobile ? 0 : -pointer.y * 6 * depth}deg`);
-      card.style.setProperty('--scene-ry', `${mobile ? 0 : pointer.x * 10 * depth + drift * 1.2}deg`);
-    });
-    const settling = states.some((state, i) => Math.abs(state.y - scroll * (1.18 + depths[i] * .32)) > .2);
-    if (!mobile || elapsed < 2200 || settling) frame = requestAnimationFrame(tick);
-  }
-  function wake() {if (!frame && visible && !motionPreference.matches && !document.hidden) {last = 0; frame = requestAnimationFrame(tick);}}
-  hero.addEventListener('pointermove', e => {
-    if (!fine.matches || e.pointerType !== 'mouse') return;
-    const rect = hero.getBoundingClientRect();
-    pointer = {x:(e.clientX - rect.left) / rect.width * 2 - 1,y:(e.clientY - rect.top) / rect.height * 2 - 1}; wake();
-  }, {passive:true});
-  hero.addEventListener('pointerleave', () => {pointer = {x:0,y:0};wake();});
-  addEventListener('scroll', wake, {passive:true});
-  addEventListener('resize', wake, {passive:true});
-  document.addEventListener('visibilitychange', () => document.hidden ? reset() : wake());
-  motionPreference.addEventListener('change', () => motionPreference.matches ? reset() : wake());
-  if ('IntersectionObserver' in window) new IntersectionObserver(entries => {visible = entries[0].isIntersecting;visible ? wake() : reset();}).observe(hero);
-  wake();
+ const hero = document.querySelector('.world-hero');
+ if (!hero) return;
+ const shell = hero.parentElement, stage = hero.querySelector('.scene-stage');
+ const cards = [...hero.querySelectorAll('.scene')];
+ const copy = hero.querySelector('.hero-copy');
+ const reduced = motionPreference;
+ let frame = 0, start = performance.now();
+ const clamp = v => Math.max(0,Math.min(1,v));
+ function draw(now) {
+  frame = 0;
+  const mobile = innerWidth <= 650;
+  const travel = shell.offsetHeight - hero.offsetHeight;
+  const progress = clamp((88 - shell.getBoundingClientRect().top) / Math.max(1,travel));
+  const t = progress * progress * (3 - 2 * progress);
+  const width = mobile ? 138 : Math.min(210,(hero.clientWidth-120)/5-20);
+  const height = width * 1.3, gap = mobile ? 14 : 20;
+  const rowWidth = 5 * width + 4 * gap;
+  const left = mobile ? 20 : (hero.clientWidth-rowWidth)/2;
+  const top = Math.max(100,(hero.clientHeight-height)/2);
+  cards.forEach((card,i) => {
+   const elapsed = clamp((now-start-i*100)/1300);
+   const entry = reduced.matches ? 0 : Math.pow(1-elapsed,4)*(1-t);
+   const x = left+i*(width+gap)-card.offsetLeft;
+   const y = top-card.offsetTop;
+   card.style.setProperty('--scene-x',`${x*t + entry*(i%2 ? 130 : -130)}px`);
+   card.style.setProperty('--scene-y',`${y*t-entry*80}px`);
+   card.style.setProperty('--scene-rx','0deg');card.style.setProperty('--scene-ry',`${(1-t)*entry*15}deg`);
+   card.style.setProperty('--row-turn',`${t}`);
+   card.style.setProperty('--scene-enter-opacity',String(reduced.matches ? 1 : elapsed));
+   card.style.setProperty('--scene-enter-scale','1');
+   card.style.width = `${card._w+(width-card._w)*t}px`;
+   card.style.height = `${card._h+(height-card._h)*t}px`;
+  });
+  copy.style.opacity = String(1-clamp(progress*2.5));
+  copy.style.visibility = progress > .45 ? 'hidden' : 'visible';
+  hero.querySelector('.sector-nav').style.opacity = String(1-t);
+  hero.querySelector('.sector-nav').style.visibility = progress > .8 ? 'hidden' : 'visible';
+  hero.classList.toggle('row-ready',progress>.95);
+  stage.style.overflowX = mobile && progress>.95 ? 'auto' : 'visible';
+  if(now-start<1900) frame=requestAnimationFrame(draw);
+ }
+ function measure(){
+  cards.forEach(card=>{card.style.width='';card.style.height='';card._w=card.offsetWidth;card._h=card.offsetHeight;});queue();
+ }
+ function queue(){if(!frame)frame=requestAnimationFrame(draw);}
+ addEventListener('scroll',queue,{passive:true});addEventListener('resize',measure,{passive:true});
+ reduced.addEventListener('change',queue);measure();
 })();
