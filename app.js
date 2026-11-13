@@ -99,11 +99,12 @@ document.querySelectorAll('[data-sector]').forEach(control => {
   cards.forEach((card,i) => {
    const elapsed = clamp((now-start-i*100)/1300);
    const ease = v => {v=clamp(v);return v*v*v*(v*(v*6-15)+10);};
-   const firstOut = ease((rawProgress-.04)/.1);
-   const secondIn = ease((rawProgress-.15)/.13);
+   const firstOut = ease((rawProgress-.04)/.16);
+   const secondIn = ease((rawProgress-.12)/.18);
    const galleryReturn = ease((progress-.08)/.25);
    const visibility = i < 5 ? 1-firstOut+firstOut*galleryReturn : secondIn;
-   const batchScale = reduced.matches ? 1 : .3+.7*visibility;
+   const batchScale = reduced.matches ? 1 : .65+.35*visibility;
+   const batchOpacity = visibility*visibility*(3-2*visibility);
    const spread = ease(progress/.4);
    const gather = ease((progress-.4)/.32);
    // Alternating lanes preserve left-to-right order throughout the transition.
@@ -128,7 +129,8 @@ document.querySelectorAll('[data-sector]').forEach(control => {
    card.style.setProperty('--scene-rx','0deg');
    card.style.setProperty('--scene-ry','0deg');
    card.style.setProperty('--row-turn',String(.7*spread+.3*gather));
-   card.style.setProperty('--batch-opacity',String(visibility));
+   card.style.setProperty('--batch-opacity',String(batchOpacity));
+   card.style.opacity = String(batchOpacity);
    card.style.setProperty('--batch-scale',String(batchScale));
    card.style.visibility = visibility > .005 ? 'visible' : 'hidden';
    card.style.pointerEvents = visibility > .8 ? '' : 'none';
