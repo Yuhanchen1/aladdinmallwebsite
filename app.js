@@ -113,7 +113,7 @@ document.querySelectorAll('[data-sector]').forEach(control => {
   hero.classList.toggle('row-ready',progress>.95);
   hero.style.overflowX = progress>.95 ? 'auto' : 'clip';
   hero.querySelector('.scroll-cue').style.pointerEvents = progress>.95 ? 'none' : '';
-  if(now-start<1900) frame=requestAnimationFrame(draw);
+  if(now-start<1400+cards.length*100) frame=requestAnimationFrame(draw);
  }
  function measure(){
   cards.forEach(card=>{card.style.width='';card.style.height='';card._w=card.offsetWidth;card._h=card.offsetHeight;});queue();
