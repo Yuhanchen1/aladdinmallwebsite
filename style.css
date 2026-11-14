@@ -186,7 +186,6 @@ body .note p,body .help p,body .app-grid p,body footer p,body dialog p{
  font-family:Poppins,Arial,sans-serif;font-size:var(--body-copy-size);
  line-height:var(--body-copy-leading);font-weight:400;letter-spacing:normal;
 }
-
 /* Hero description and benefit bullets use their dedicated type scales. */
 body .hero-scroll-shell .hero-copy>p{font-size:18px;line-height:28px}
 body .hero-scroll-shell .hero-copy .checks{
@@ -197,26 +196,185 @@ body .hero-scroll-shell .hero-copy .checks li{display:inline-flex;align-items:ce
 body .hero-scroll-shell .hero-copy .checks li::before{
  flex-shrink:0;width:18px;height:18px;margin-right:8px;font-size:12px;line-height:18px;
 }
-
 /* Hide gallery scroll chrome while preserving horizontal navigation. */
 .hero-scroll-shell .world-hero.row-ready .scene-stage{
  scrollbar-width:none;-ms-overflow-style:none;
 }
 .hero-scroll-shell .world-hero.row-ready .scene-stage::-webkit-scrollbar{display:none}
 .hero-scroll-shell .world-hero.row-ready .scroll-cue{display:none}
-
 /* Labels use natural tracking; gallery card names use the requested scale. */
 body main small,body .hero-copy small,body .gallery-copy small{letter-spacing:0}
 .hero-scroll-shell .scroll-cue{display:none}
 body .hero-scroll-shell .world-hero.row-ready .scene>span{
- font-size:18px;line-height:28px;color:#1d2939;
+ font-size:16px;line-height:24px;color:#1d2939;
 }
 
-/* Consistent action-button typography across desktop and mobile. */
-body header nav button,
-body .hero-scroll-shell .hero-copy .primary,
-body main button:not(.scene),
-body .app-grid .store,
-body dialog form button:not(.close){
- font-family:Poppins,Arial,sans-serif;font-size:16px;line-height:24px;font-weight:600;
+/* Scroll-driven whole-section cards. Mobile and reduced motion retain natural flow. */
+.section-card-stage{position:relative;background:transparent}
+.section-card-face{transform-origin:50% 0;background:#fff}
+.stack-enabled .section-card-stage{position:sticky;top:70px;min-height:calc(100vh - 70px);perspective:1600px}
+.stack-enabled .section-card-face{will-change:transform,opacity;backface-visibility:hidden}
+.stack-enabled .section-card-face>section{min-height:calc(100vh - 70px);margin:0}
+.section-card-stack{position:relative;isolation:isolate;padding-bottom:1px}
+
+/* Pricing illustration composition supplied by the user. */
+.price .pricing-sweep{position:absolute;left:0;bottom:0;width:53%;height:auto;pointer-events:none;z-index:0}
+.price .pricing-arc{position:absolute;left:9%;bottom:0;width:42%;height:auto;pointer-events:none;z-index:1}
+.price .owner{z-index:2;width:790px;left:-35px;bottom:-20px}
+.price .pricing-store{position:absolute;left:38%;top:30%;width:24%;height:auto;z-index:3;pointer-events:none}
+.price>small,.price>h2,.price>p{position:relative;z-index:4}
+.price aside{z-index:5;background:transparent;padding:0;box-shadow:none;display:grid;gap:24px}
+.price aside>div{background:#fff;border-radius:20px;padding:12px 32px;box-shadow:0 4px 30px #7f56d92b}
+.price aside p,.price aside div:last-child p{margin:10px 0 0}
+@media(max-width:1100px) and (min-width:651px){.price .owner{width:68%;left:-25px}.price .pricing-store{left:36%;top:39%;width:26%}.price aside{width:260px;right:32px}.price aside>div{padding:12px 24px}}
+@media(max-width:650px){.price .pricing-sweep{width:100%}.price .pricing-arc{width:95%;left:-20%}.price .owner{width:520px;left:-140px;bottom:0}.price .pricing-store{width:42%;left:3%;top:34%}.price aside{width:174px;right:20px;gap:16px}.price aside>div{padding:12px 18px}}
+
+/* Industry card labels */
+.hero-scroll-shell .scene>span{font-size:14px;line-height:24px}
+.hero-scroll-shell .world-hero.row-ready .scene>span{font-size:16px;line-height:24px}
+
+.price aside strong{font-weight:600;font-variant-numeric:tabular-nums}
+.fee-number{display:inline-flex;align-items:baseline;white-space:nowrap;line-height:1.2}
+.fee-digit{display:inline-block;width:.65em;height:1.2em;overflow:hidden;vertical-align:bottom;mask-image:linear-gradient(transparent,#000 12%,#000 88%,transparent)}
+.fee-reel{display:flex;flex-direction:column;will-change:transform}
+.fee-reel>span{display:block;flex:0 0 1.2em;height:1.2em;line-height:1.2;text-align:center}
+
+.gallery-copy h2 .every-purple{color:#6941c6}
+
+body .hero-scroll-shell .hero-copy .checks,
+body .hero-scroll-shell .hero-copy .checks li,
+body .hero-scroll-shell .hero-copy h1 em{color:#6941c6}
+body .hero-scroll-shell .hero-copy .checks li::before{background:#6941c6;color:#fff}
+
+/* A shared visual system for the three story panels. */
+.section-card-stack{padding:40px 32px;background:#faf8fd}
+.section-card-face{border-radius:32px;overflow:hidden;background:#faf8fd}
+.section-card-face .split{padding:72px max(40px,5vw);gap:64px;grid-template-columns:1fr 1fr;min-height:680px;background:#faf8fd}
+body .section-card-face h2{font-size:clamp(30px,3vw,44px);line-height:1.2;letter-spacing:-.035em;font-weight:600;max-width:620px}
+body .section-card-face .split>div>p{font-size:16px;line-height:27px;max-width:510px;margin-top:24px;color:#667085}
+.section-card-face .visual,.section-card-face .support .visual{height:460px;min-width:0;isolation:isolate}
+.section-card-face .visual .purple{inset:30px 0 0 35px;width:auto;height:auto;border-radius:28px;clip-path:none;background:linear-gradient(145deg,#e9d7fe,#c8a5f8);z-index:-1}
+.section-card-face .visual .person,.section-card-face .support .person{position:absolute;left:8%;bottom:0;top:auto;width:92%;height:450px;object-fit:contain;object-position:center bottom}
+.section-card-face .note,.section-card-face .help{background:#fff;border:1px solid #eee7f6;border-radius:18px;box-shadow:0 16px 48px #41246914;padding:22px;width:260px;animation:none}
+.section-card-face .note{left:0;bottom:24px}
+.section-card-face .note img{width:52px;height:52px;margin-bottom:16px}
+.section-card-face .note b,.section-card-face .help h3{font-size:17px;line-height:24px;font-weight:600}
+body .section-card-face .note p,body .section-card-face .help p{font-size:14px;line-height:22px;margin-top:6px;color:#667085}
+.section-card-face .help{right:0;top:20px;font-size:30px}
+.section-card-face .help h3{margin-top:12px}
+.section-card-face .features{background:#f3edfc;padding:64px max(40px,5vw);min-height:680px}
+.section-card-face .features h2{max-width:760px}
+.section-card-face .feature-grid{gap:24px;margin-top:40px;align-items:stretch}
+.section-card-face .feature-grid article{margin:0;clip-path:none;border-radius:24px;border:1px solid #e9dff5;padding:30px;background:#fff;box-shadow:0 8px 24px #41246905}
+.section-card-face .feature-grid article img{width:100px;height:100px;margin-bottom:28px}
+.section-card-face .feature-grid h3{font-size:22px;line-height:30px;font-weight:600;letter-spacing:-.02em}
+body .section-card-face .feature-grid p{font-size:15px;line-height:25px;margin-top:12px;color:#667085}
+@media(max-width:900px){.section-card-stack{padding:24px 16px}.section-card-face .split{padding:48px 24px;gap:32px;display:flex;flex-direction:column}.section-card-face .split>div{width:100%}.section-card-face .features{padding:48px 24px}.section-card-face .feature-grid{grid-template-columns:1fr}.section-card-face .visual,.section-card-face .support .visual{height:400px}.section-card-face .visual .person,.section-card-face .support .person{height:390px}.section-card-face{margin-bottom:24px}.section-card-face .feature-grid article img{margin-bottom:16px}}
+
+@font-face{font-family:AladdinAccent;src:url('assets/fonts/recoleta-semibold.woff2') format('woff2');font-weight:600;font-style:normal;font-display:swap}
+body .hero-scroll-shell .hero-copy h1 em,
+body .gallery-copy h2 .every-purple,
+body .price h2 em{
+ font-family:AladdinAccent,Georgia,serif;font-weight:600;font-style:normal;
+ color:#6941c6;letter-spacing:-.025em;
 }
+
+@font-face{font-family:RecoletaNumber;src:url('assets/fonts/recoleta-medium.woff2') format('woff2');font-weight:500;font-style:normal;font-display:swap}
+.section-card-face>section{position:relative}
+.section-card-face .story-number{position:absolute;left:48px;right:auto;top:24px;font-family:RecoletaNumber,Georgia,serif;font-weight:500;font-size:64px;line-height:1;color:#6941c6;z-index:6;pointer-events:none}
+.section-card-face .support>div:not(.visual){grid-column:1;grid-row:1}
+.section-card-face .support>.visual{grid-column:2;grid-row:1}
+.section-card-face .features{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;background:#faf8fd}
+.section-card-face .features>h2{grid-column:1;grid-row:1}
+.section-card-face .features>.feature-grid{grid-column:2;grid-row:1;grid-template-columns:1fr;gap:12px;margin:0}
+.section-card-face .feature-grid article{display:grid;grid-template-columns:64px 1fr;column-gap:20px;padding:20px 24px;border-radius:18px}
+.section-card-face .feature-grid article img{grid-column:1;grid-row:1/3;width:64px;height:64px;margin:0;align-self:center}
+.section-card-face .feature-grid article h3{grid-column:2;font-size:18px;line-height:26px}
+body .section-card-face .feature-grid article p{grid-column:2;font-size:14px;line-height:22px;margin-top:6px}
+@media(max-width:900px){.section-card-face .story-number{font-size:44px;left:24px;right:auto;top:20px}.section-card-face .split,.section-card-face .features{padding-top:88px}.section-card-face .features{display:flex;flex-direction:column;align-items:stretch;gap:32px}.section-card-face .support>div:not(.visual){order:0}.section-card-face .support>.visual{order:1}.section-card-face .feature-grid article{grid-template-columns:48px 1fr;padding:20px}.section-card-face .feature-grid article img{width:48px;height:48px}}
+
+/* Align each illustration with the complete numbered text column. */
+@media(min-width:901px){
+ .section-card-face .split{grid-template-rows:64px 1fr;row-gap:36px;align-items:stretch;padding-top:48px;padding-bottom:48px}
+ .section-card-face .split>.story-number{position:static;grid-column:1;grid-row:1;align-self:start}
+ .section-card-face .split>div:not(.visual),.section-card-face .support>div:not(.visual){grid-column:1;grid-row:2;align-self:end;padding-bottom:8px}
+ .section-card-face .split>.visual,.section-card-face .support>.visual{grid-column:2;grid-row:1/3;height:auto;min-height:540px;align-self:stretch}
+ .section-card-face .visual .purple{inset:0;border-radius:28px}
+ .section-card-face .visual .person,.section-card-face .support .person{height:100%;width:100%;left:0;object-fit:contain;object-position:center bottom}
+ .section-card-face .note{left:-20px;bottom:24px}
+ .section-card-face .help{right:20px;top:24px}
+ .section-card-face .features{grid-template-rows:64px 1fr;row-gap:36px;padding-top:48px;padding-bottom:48px;align-items:stretch}
+ .section-card-face .features>.story-number{position:static;grid-column:1;grid-row:1}
+ .section-card-face .features>h2{grid-column:1;grid-row:2;align-self:end;padding-bottom:8px}
+ .section-card-face .features>.feature-grid{grid-column:2;grid-row:1/3;min-height:540px;align-self:stretch}
+}
+
+body>header,body>header.scrolled{background:transparent;backdrop-filter:none;border-bottom-color:transparent;box-shadow:none;transition:background .25s ease,box-shadow .25s ease}
+body>header.second-screen{background:#fff;box-shadow:0 1px 0 #6941c60a}
+
+@media(min-width:901px){
+ .section-card-face .split,.section-card-face .features{
+  padding-top:120px;padding-bottom:120px;
+  grid-template-rows:64px auto;align-content:center;row-gap:36px;
+ }
+ .section-card-face .split>.visual,.section-card-face .support>.visual,
+ .section-card-face .features>.feature-grid{min-height:480px}
+}
+
+/* Layered product stories: photography, useful UI, and restrained purple accents. */
+.section-card-face .visual{border-radius:28px;background:radial-gradient(ellipse at 80% 20%,#e9d7fe,transparent 65%),#f0e7fb;overflow:visible}
+.section-card-face .visual .purple{background:linear-gradient(145deg,#ede2fb,#d1b4f4);inset:12px;border-radius:24px}
+.section-card-face .visual .person{width:78%;left:22%;height:84%;z-index:1}
+.orbit-label{position:absolute;top:28px;left:28px;right:24px;font-size:11px;letter-spacing:.08em;color:#6941c6;font-weight:600;z-index:3}
+.mini-calendar,.setup-progress{position:absolute;z-index:3;left:-18px;top:90px;width:260px;padding:22px;background:#ffffffed;border:1px solid #fff;border-radius:20px;box-shadow:0 18px 40px #53318018;transform:rotate(-4deg);backdrop-filter:blur(12px)}
+.mini-calendar small,.setup-progress small{font-size:9px;letter-spacing:.08em;color:#8a719e;display:block}
+.mini-calendar strong,.setup-progress strong{display:block;font-size:19px;line-height:28px;margin-top:8px;color:#302042}
+.week-strip{display:flex;gap:5px;margin-top:18px}.week-strip span{flex:1;text-align:center;padding:8px 2px;font-size:10px;line-height:20px;border-radius:10px;background:#f7f3fc;color:#7d6d8f}.week-strip .selected{background:#6941c6;color:white}
+.mini-calendar footer{padding:12px 0 0;margin:12px 0 0;border-top:1px solid #eee7f5;font-size:10px;color:#6941c6;display:flex;justify-content:space-between}
+.sent-chip{position:absolute;right:20px;bottom:28px;z-index:4;background:#6941c6;color:white;border-radius:99px;padding:12px 18px;font-size:12px;box-shadow:0 8px 24px #6941c630;transform:rotate(3deg)}
+.section-card-face .rich-reminder .note{left:22px;bottom:32px;width:230px;transform:rotate(2deg);z-index:4}
+.section-card-face .rich-reminder .note img{width:36px;height:36px;margin-bottom:8px}
+.section-card-face .rich-reminder .note b{font-size:14px}.section-card-face .rich-reminder .note p{font-size:12px}
+.section-card-face .rich-support .person{left:0;width:88%;height:90%}
+.section-card-face .rich-support .help{top:78px;right:-12px;width:230px;z-index:4;transform:rotate(4deg);padding:18px;font-size:24px}
+.setup-progress{top:auto;bottom:24px;left:20px;width:240px;transform:rotate(-3deg)}
+.progress-track{height:6px;background:#eee6f8;border-radius:8px;margin:14px 0}.progress-track i{display:block;width:86%;height:100%;background:#9e77ed;border-radius:8px}
+body .section-card-face .setup-progress p{font-size:11px;line-height:22px;color:#6941c6;margin:0}
+.chat-reply{position:absolute;z-index:5;right:12px;bottom:30px;font-size:10px;background:#eee4fb;padding:12px;border-radius:14px;transform:rotate(3deg);max-width:200px;color:#6941c6}
+.chat-reply span{display:block;background:#6941c6;color:#fff;padding:12px;margin:10px -8px -4px 12px;border-radius:12px;line-height:18px}
+.dashboard-mini{padding:24px;background:linear-gradient(120deg,#6941c6,#9e77ed);color:#fff;border-radius:22px;box-shadow:0 18px 32px #6941c61a;transform:rotate(-2deg);margin-bottom:10px}
+.dashboard-mini>div:first-child{display:flex;justify-content:space-between;font-size:11px}.dashboard-mini small{font-size:8px;opacity:.7}.dashboard-mini>strong{display:block;font-family:AladdinAccent,Georgia,serif;font-weight:600;font-size:24px;line-height:30px;margin:16px 0}
+.dashboard-stats{display:flex;justify-content:space-between;font-size:9px;gap:12px}.dashboard-stats b{display:block;font-size:23px;font-weight:500;line-height:32px}
+.dashboard-bars{height:42px;display:flex;align-items:end;gap:8px;margin-top:16px}.dashboard-bars i{flex:1;background:#ffffff55;border-radius:5px 5px 0 0;height:40%}.dashboard-bars i:nth-child(2n){height:65%}.dashboard-bars i:nth-child(3n){height:85%}.dashboard-bars i:last-child{height:100%;background:#fef7c3}
+.section-card-face .rich-platform article{padding:12px 20px;column-gap:14px}.section-card-face .rich-platform article img{width:48px;height:48px}.section-card-face .rich-platform article h3{font-size:16px}body .section-card-face .rich-platform article p{font-size:12px;line-height:19px}
+@media(max-width:650px){.mini-calendar{width:210px;left:0;top:65px;padding:16px}.orbit-label{font-size:9px;left:18px;top:18px}.section-card-face .rich-reminder .note{width:200px;left:0;bottom:16px;padding:16px}.sent-chip{right:8px;bottom:0;font-size:10px;padding:9px 12px}.section-card-face .rich-support .help{width:190px;right:0;top:58px}.setup-progress{width:190px;left:0;padding:16px}.chat-reply{max-width:155px;right:0;bottom:0;font-size:9px}.dashboard-mini{transform:none}.section-card-face .rich-platform article{grid-template-columns:48px 1fr}}
+
+/* Shared page typography. Product illustration UI keeps its compact scale. */
+:root{
+ --type-h1:60px;--type-h1-leading:72px;
+ --type-h2:40px;--type-h2-leading:50px;
+ --type-h3:22px;--type-h3-leading:30px;
+ --type-body:16px;--type-body-leading:24px;
+ --type-tag:12px;--type-tag-leading:18px;
+ --type-button:14px;--type-button-leading:20px;
+}
+body h1{font-family:Poppins,Arial,sans-serif!important;font-size:var(--type-h1)!important;line-height:var(--type-h1-leading)!important;font-weight:600!important;letter-spacing:-.03em!important}
+body h2{font-family:Poppins,Arial,sans-serif!important;font-size:var(--type-h2)!important;line-height:var(--type-h2-leading)!important;font-weight:600!important;letter-spacing:-.025em!important}
+body h3{font-family:Poppins,Arial,sans-serif;font-size:var(--type-h3);line-height:var(--type-h3-leading);font-weight:600;letter-spacing:-.015em}
+body main p,body footer p,body dialog p{font-family:Poppins,Arial,sans-serif!important;font-size:var(--type-body)!important;line-height:var(--type-body-leading)!important;font-weight:400!important;letter-spacing:0!important}
+body main small{font-family:Poppins,Arial,sans-serif!important;font-size:var(--type-tag)!important;line-height:var(--type-tag-leading)!important;font-weight:600!important;letter-spacing:0!important;color:#6941c6}
+body button:not(.scene),body .store{font-family:Poppins,Arial,sans-serif!important;font-size:var(--type-button)!important;line-height:var(--type-button-leading)!important;font-weight:600!important;letter-spacing:0!important}
+body .hero-copy .checks{font-size:14px;line-height:24px;font-weight:400}
+/* Illustration text is a smaller, consistently applied product-UI tier. */
+body .section-card-face .visual p,body .section-card-face .rich-platform p{font-size:12px!important;line-height:20px!important}
+body .mini-calendar small,body .setup-progress small,body .dashboard-mini small{font-size:9px!important;line-height:14px!important;color:inherit}
+@media(max-width:1000px){:root{--type-h1:48px;--type-h1-leading:58px;--type-h2:32px;--type-h2-leading:42px}}
+@media(max-width:650px){:root{--type-h1:36px;--type-h1-leading:44px;--type-h2:28px;--type-h2-leading:36px;--type-h3:20px;--type-h3-leading:28px}}
+
+/* Correct the flattened proportions in the supplied reminder cutout. */
+body .section-card-face .rich-reminder>.person{
+ left:auto;right:3%;bottom:0;width:66%;height:auto;max-width:none;
+ object-fit:contain;transform:scaleY(1.42);transform-origin:center bottom;
+}
+/* Keep the embedded appointment footer independent of the page footer. */
+body .mini-calendar>footer{background:transparent;min-height:0;width:auto;color:#6941c6}

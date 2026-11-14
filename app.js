@@ -174,6 +174,7 @@ document.querySelectorAll('[data-sector]').forEach(control => {
   hero.querySelector('.sector-nav').style.opacity = '1';
   hero.querySelector('.sector-nav').style.visibility = progress >= .7 ? 'hidden' : 'visible';
   hero.classList.toggle('row-ready',progress>.74);
+  document.querySelector('header').classList.toggle('second-screen',progress>.74);
   hero.style.overflowX = 'clip';
   stage.tabIndex = progress>.74 ? 0 : -1;
   stage.setAttribute('role','region');
@@ -247,4 +248,77 @@ document.querySelectorAll('[data-sector]').forEach(control => {
   navCtx?.putImageData(pixels,0,0);
  }
  requestAnimationFrame(draw);
+})();
+
+
+// Whole-section stacked cards, matching the Reshoot scroll transition.
+(() => {
+ const cards=[...document.querySelectorAll('.reminder, .features, .support')];
+ const stack=document.createElement('div'); stack.className='section-card-stack';
+ cards[0].before(stack);
+ cards.forEach((card,i)=>{
+  const stage=document.createElement('div'); stage.className='section-card-stage';
+  const face=document.createElement('div'); face.className='section-card-face';
+  stage.style.zIndex=i+1; card.before(stage); face.append(card); stage.append(face); stack.append(stage);
+ });
+ let pending=false;
+ function draw(){pending=false;const enabled=innerWidth>900&&!motionPreference.matches;
+  stack.classList.toggle('stack-enabled',enabled);
+  cards.forEach((card,i)=>{const stage=card.parentElement.parentElement,face=card.parentElement;
+   const next=cards[i+1]?.parentElement.parentElement;
+   const t=enabled&&next?Math.max(0,Math.min(1,(innerHeight-next.getBoundingClientRect().top)/innerHeight)):0;
+   face.style.transform=`perspective(1600px) rotateX(${40*t*t}deg) rotateZ(${-3*t*t}deg) scale(${1-.3*t*t})`;
+   face.style.opacity=String(1-Math.max(0,(t-.8)/.2));
+  });
+ }
+ function queue(){if(!pending){pending=true;requestAnimationFrame(draw)}}
+ addEventListener('scroll',queue,{passive:true});addEventListener('resize',queue);motionPreference.addEventListener('change',queue);draw();
+})();
+
+// Illustrative fees roll down to the actual free pricing once on entry.
+(() => {
+ const section=document.querySelector('#pricing');
+ const amounts=[...section.querySelectorAll('aside strong')];
+ const starts=[49,5,199];
+ amounts.forEach((el,i)=>el.setAttribute('aria-label',i===1?'0 percent sales commission':'0 dollars'));
+ if(motionPreference.matches || !('IntersectionObserver' in window)) return;
+ const observer=new IntersectionObserver(entries=>{
+  if(!entries.some(e=>e.isIntersecting && e.intersectionRatio>=.85))return;
+  observer.disconnect();
+  amounts.forEach((el,i)=>{
+   const prefix=i===1?'':'$',suffix=i===1?'%':'';
+   el.textContent='';
+   el.setAttribute('title','Illustrative fee animation; Aladdin Mall is free.');
+   const visual=document.createElement('span');visual.className='fee-number';visual.setAttribute('aria-hidden','true');el.append(visual);
+   visual.append(prefix);
+   const digits=String(starts[i]).split('').map(n=>{
+    const slot=document.createElement('span');slot.className='fee-digit';
+    const reel=document.createElement('span');reel.className='fee-reel';
+    for(let d=Number(n)+10;d>=0;d--){const cell=document.createElement('span');cell.textContent=d%10;reel.append(cell)}
+    slot.append(reel);visual.append(slot);return {slot,reel,n:Number(n)+10};
+   });visual.append(suffix);
+   setTimeout(()=>{
+    if(motionPreference.matches){el.textContent=i===1?'0%':'$0';return}
+    digits.forEach(({slot,reel,n},j)=>{
+     const animation=reel.animate([{transform:'translateY(0)'},{transform:`translateY(-${n*1.2}em)`}],{duration:1800+j*130,easing:'cubic-bezier(.22,.7,.2,1)',fill:'forwards'});
+     animation.onfinish=()=>{
+      if(j<digits.length-1){slot.style.transition='width 450ms ease, opacity 350ms ease';slot.style.width='0';slot.style.opacity='0'}
+      if(j===digits.length-1){
+       setTimeout(()=>{
+        if(motionPreference.matches)return;
+        visual.style.transformOrigin='left center';
+        visual.animate([
+         {transform:'scale(1)',offset:0},
+         {transform:'scale(1.12)',offset:.2},
+         {transform:'scale(1)',offset:.42},
+         {transform:'scale(1.12)',offset:.65},
+         {transform:'scale(1)',offset:1}
+        ],{duration:1000,easing:'ease-in-out'});
+       },450);
+      }
+     };
+    });
+   },650+i*250);
+  });
+ },{threshold:[0,.85],rootMargin:'-70px 0px 0px 0px'});observer.observe(section.querySelector('aside'));
 })();
