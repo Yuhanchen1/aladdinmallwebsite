@@ -2410,8 +2410,8 @@ body > header .nav-account-group .language-switch summary { background:#fff; col
   .mobile-industry-gallery > .mobile-industry-track {
     overflow-x:auto;
     overflow-y:hidden;
-    overscroll-behavior-y:none;
-    touch-action:pan-x;
+    overscroll-behavior-y:auto;
+    touch-action:pan-y pinch-zoom;
   }
 }
 
@@ -2534,10 +2534,10 @@ body > header .nav-account-group .language-switch summary { background:#fff; col
     overflow:hidden;
     padding:24px 0 66px;
     scroll-snap-type:none;
-    touch-action:pan-x;
+    touch-action:pan-y pinch-zoom;
   }
-  .industry-embla-container { gap:16px; height:280px; }
-  .industry-embla-slide { flex:0 0 var(--arc-card-width); min-width:0; }
+  .industry-embla-container { gap:0; height:280px; }
+  .industry-embla-slide { flex:0 0 var(--arc-card-width); min-width:0; margin-right:16px; }
   .industry-embla-slide > .mobile-industry-card {
     width:100%; max-width:none; height:280px;
     transform-origin:50% 0;
@@ -2549,3 +2549,53 @@ body > header .nav-account-group .language-switch summary { background:#fff; col
   }
   .industry-embla-slide > .mobile-industry-card > span { left:15%; right:15%; bottom:12%; }
 }
+
+@media (max-width:650px) {
+  body .mobile-signup > button.primary {
+    font-size:16px !important;
+    line-height:24px !important;
+  }
+}
+
+@media (max-width:650px) {
+  body .section-card-stack .section-card-face > section > .figma-reminder {
+    scale:1.05;
+    transform-origin:center center;
+  }
+  body .section-card-stack .section-card-face > section > .figma-support {
+    scale:1.08;
+    transform-origin:center center;
+  }
+}
+
+@media (max-width:650px) {
+  .hero-scroll-shell .hero-copy .primary span {
+    top:calc(50% + 2px);
+  }
+}
+
+.app-grid .app-audience {
+  display:block;
+  margin:0 0 8px;
+  font-size:12px;
+  line-height:18px;
+  font-weight:600;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  color:#c95100;
+}
+.app-grid > article:nth-child(2) .app-audience { color:#6941c6; }
+
+/* Optical alignment for the closing signup button across all screen sizes. */
+.cta-inline > button.primary > span[aria-hidden="true"] {
+  position:relative;
+  top:2px;
+}
+
+/* Apply the same optical offset to the opening CTA on every screen size. */
+.hero-scroll-shell .hero-copy .primary span {
+  top:calc(50% + 2px);
+}
+
+/* Bring the download badges closer to the app descriptions. */
+body .app-grid > article > p { margin-bottom:18px; }
