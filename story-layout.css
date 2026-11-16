@@ -2637,3 +2637,5 @@ body .app-grid > article > p { margin-bottom:18px; }
   .industry-embla-slide > .mobile-industry-card { height:252px; }
   .mobile-industry-gallery > .mobile-industry-track { height:342px; }
 }
+
+.cta-business-art > picture { display:block; width:100%; }
