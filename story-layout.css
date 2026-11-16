@@ -2525,13 +2525,3 @@ body > header .nav-account-group .language-switch summary { background:#fff; col
   /* 32px section margin + 24px carousel padding = 56px. */
   body main > .hero-scroll-shell + .mobile-industry-gallery { margin-top:32px; }
 }
-
-@media (max-width:650px) {
-  .mobile-industry-gallery > .mobile-industry-track {
-    scroll-snap-type:none;
-    scroll-behavior:auto;
-  }
-  .mobile-industry-track > .mobile-industry-card {
-    backface-visibility:hidden;
-  }
-}

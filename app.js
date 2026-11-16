@@ -886,70 +886,37 @@ document.querySelectorAll("[data-sector]").forEach((control) => {
   track.append(...makeCopies());
   const cards = [...track.children];
   let frame = 0, initialized = false;
-  let layout = [], viewport = 0, cycle = 0, origin = 0, phone = false;
-  let settleTimer, touching = false;
-  function measure() {
-    phone = matchMedia('(max-width:650px)').matches;
-    viewport = track.clientWidth;
-    layout = cards.map(card => ({ card, left:card.offsetLeft, width:card.offsetWidth }));
-    const first = layout[originals.length];
-    cycle = layout[originals.length * 2].left - first.left;
-    origin = first.left + first.width / 2 - viewport / 2;
-    if (phone && !initialized && cycle > 0) {
-      track.scrollTo({left:origin, behavior:'instant'});
-      initialized = true;
-    } else if (!phone && initialized) {
+  function renderArc() {
+    frame = 0;
+    const phone = matchMedia('(max-width:650px)').matches;
+    if (phone) {
+      const first = originals[0];
+      const cycle = originals.length * (originals[1].offsetLeft - first.offsetLeft);
+      if (cycle > 0) {
+        const origin = first.offsetLeft + first.offsetWidth / 2 - track.clientWidth / 2;
+        let next = initialized ? track.scrollLeft : origin;
+        if (next < origin - cycle / 2) next += cycle;
+        if (next >= origin + cycle / 2) next -= cycle;
+        if (!initialized || Math.abs(next - track.scrollLeft) > 1) {
+          track.scrollTo({left:next, behavior:'instant'});
+        }
+        initialized = true;
+      }
+    } else if (initialized) {
       initialized = false;
       track.scrollTo({left:0, behavior:'instant'});
     }
-    schedule();
-  }
-  function settle() {
-    if (!phone || !cycle || touching) return;
-    const current = track.scrollLeft;
-    // Rebase only once native momentum and optional centering have finished.
-    const wrapped = origin + ((((current - origin) % cycle) + cycle) % cycle);
-    if (Math.abs(wrapped - current) > 1) track.scrollTo({left:wrapped, behavior:'instant'});
-    const step = cycle / originals.length;
-    const target = origin + Math.round((wrapped - origin) / step) * step;
-    if (Math.abs(target - wrapped) > 1) {
-      track.scrollTo({left:target, behavior:motionPreference.matches ? 'instant' : 'smooth'});
-    }
-    schedule();
-  }
-  function renderArc() {
-    frame = 0;
-    const center = track.scrollLeft + viewport / 2;
-    // All geometry reads happen in measure(); this loop only writes transforms.
-    layout.forEach(({card, left, width}) => {
-      if (!phone) { card.style.transform = ''; card.style.visibility = ''; return; }
-      const dx = left + width / 2 - center;
-      const visible = Math.abs(dx) < viewport / 2 + width * 1.5;
-      card.style.visibility = visible ? 'visible' : 'hidden';
-      if (!visible) return;
-      const radius = width * 4;
+    const center = track.scrollLeft + track.clientWidth / 2;
+    cards.forEach(card => {
+      if (!phone) { card.style.transform = ''; return; }
+      const dx = card.offsetLeft + card.offsetWidth / 2 - center;
+      const radius = card.offsetWidth * 4;
       const angle = Math.max(-1.2, Math.min(1.2, dx / radius));
-      card.style.transform = `translate3d(${radius * Math.sin(angle) - dx}px, ${radius * (1 - Math.cos(angle))}px, 0) rotate(${angle * 180 / Math.PI}deg)`;
+      card.style.transform = `translate(${radius * Math.sin(angle) - dx}px, ${radius * (1 - Math.cos(angle))}px) rotate(${angle * 180 / Math.PI}deg)`;
     });
   }
   function schedule() { if (!frame) frame = requestAnimationFrame(renderArc); }
-  track.addEventListener('scroll', () => {
-    schedule();
-    clearTimeout(settleTimer);
-    settleTimer = setTimeout(settle, 180);
-  }, { passive:true });
-  track.addEventListener('touchstart', () => {
-    touching = true;
-    clearTimeout(settleTimer);
-  }, {passive:true});
-  const release = () => {
-    touching = false;
-    clearTimeout(settleTimer);
-    settleTimer = setTimeout(settle, 180);
-  };
-  track.addEventListener('touchend', release, {passive:true});
-  track.addEventListener('touchcancel', release, {passive:true});
-  const resizeObserver = new ResizeObserver(measure);
-  resizeObserver.observe(track);
-  measure();
+  track.addEventListener('scroll', schedule, { passive:true });
+  addEventListener('resize', schedule);
+  schedule();
 })();
