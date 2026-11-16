@@ -22,7 +22,7 @@ const control = document.createElement('details');
 control.className = 'language-switch';
 const summary = document.createElement('summary');
 summary.setAttribute('aria-label', 'Language / 语言');
-summary.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18M5 6h14M5 18h14"/></svg><span>'+['en','zh-CN','zh-TW','es','vi'][languages.indexOf(language)]+'</span>';
+summary.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18M5 6h14M5 18h14"/></svg><span>'+['EN','简中','繁中','Español','Tiếng Việt'][languages.indexOf(language)]+'</span>';
 control.append(summary);
 const menu = document.createElement('div'); menu.className='language-options';
 languages.forEach((code,i)=>{

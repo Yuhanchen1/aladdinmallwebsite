@@ -1,3 +1,18 @@
+// Mobile signup stays available after the first viewport.
+const mobileSignup = document.createElement("div");
+mobileSignup.className = "mobile-signup";
+const mobileSignupButton = document.querySelector('header [data-open="signup"]').cloneNode(true);
+mobileSignup.append(mobileSignupButton);
+document.body.append(mobileSignup);
+function syncMobileSignup() {
+  const visible = matchMedia("(max-width: 650px)").matches && scrollY >= innerHeight * 0.85;
+  mobileSignup.classList.toggle("is-visible", visible);
+  mobileSignup.inert = !visible;
+}
+addEventListener("scroll", syncMobileSignup, { passive: true });
+addEventListener("resize", syncMobileSignup);
+syncMobileSignup();
+
 const dialog = document.querySelector("dialog");
 document.querySelectorAll("[data-open]").forEach((button) =>
   button.addEventListener("click", () => {
@@ -520,8 +535,11 @@ document.querySelectorAll("[data-sector]").forEach((control) => {
         const g = 1 - smooth((d - 0.25 + soft) / (2 * soft));
         // A broad white bridge keeps lavender and yellow from mixing into beige.
         const horizontal = x / 96;
-        const tint =
-          horizontal < 0.5
+        const tint = innerWidth <= 650
+          ? (horizontal < 0.5
+              ? mix([240, 229, 248], [250, 242, 241], smooth(horizontal * 2))
+              : mix([250, 242, 241], [255, 248, 224], smooth((horizontal - 0.5) * 2)))
+          : horizontal < 0.5
             ? mix(
                 [229, 209, 241],
                 [255, 255, 255],
@@ -850,4 +868,55 @@ document.querySelectorAll("[data-sector]").forEach((control) => {
   document.fonts.ready.then(fit);
   addEventListener("resize", fit, { passive: true });
   fit();
+})();
+
+// Native touch scrolling with repeated cards and seamless arc wrapping.
+(() => {
+  const track = document.querySelector('.mobile-industry-track');
+  if (!track) return;
+  const originals = [...track.children];
+  if (!originals.length) return;
+  const makeCopies = () => originals.map(card => {
+    const copy = card.cloneNode(true);
+    copy.classList.add('arc-copy');
+    copy.setAttribute('aria-hidden', 'true');
+    return copy;
+  });
+  track.prepend(...makeCopies());
+  track.append(...makeCopies());
+  const cards = [...track.children];
+  let frame = 0, initialized = false;
+  function renderArc() {
+    frame = 0;
+    const phone = matchMedia('(max-width:650px)').matches;
+    if (phone) {
+      const first = originals[0];
+      const cycle = originals.length * (originals[1].offsetLeft - first.offsetLeft);
+      if (cycle > 0) {
+        const origin = first.offsetLeft + first.offsetWidth / 2 - track.clientWidth / 2;
+        let next = initialized ? track.scrollLeft : origin;
+        if (next < origin - cycle / 2) next += cycle;
+        if (next >= origin + cycle / 2) next -= cycle;
+        if (!initialized || Math.abs(next - track.scrollLeft) > 1) {
+          track.scrollTo({left:next, behavior:'instant'});
+        }
+        initialized = true;
+      }
+    } else if (initialized) {
+      initialized = false;
+      track.scrollTo({left:0, behavior:'instant'});
+    }
+    const center = track.scrollLeft + track.clientWidth / 2;
+    cards.forEach(card => {
+      if (!phone) { card.style.transform = ''; return; }
+      const dx = card.offsetLeft + card.offsetWidth / 2 - center;
+      const radius = card.offsetWidth * 4;
+      const angle = Math.max(-1.2, Math.min(1.2, dx / radius));
+      card.style.transform = `translate(${radius * Math.sin(angle) - dx}px, ${radius * (1 - Math.cos(angle))}px) rotate(${angle * 180 / Math.PI}deg)`;
+    });
+  }
+  function schedule() { if (!frame) frame = requestAnimationFrame(renderArc); }
+  track.addEventListener('scroll', schedule, { passive:true });
+  addEventListener('resize', schedule);
+  schedule();
 })();

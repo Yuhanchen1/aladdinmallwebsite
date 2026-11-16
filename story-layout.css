@@ -2302,16 +2302,226 @@ body > footer.site-footer .footer-legal { grid-row: 3; }
   body > footer.site-footer .footer-brand > p { grid-row: 4; }
 }
 
-/* Shared account capsule: language selection and sign in remain distinct controls. */
-body > header .nav-account-group { display:flex; align-items:center; background:#fff; border-radius:100px; flex:0 0 auto; }
+/* Separate language and sign-in buttons. */
+body > header .nav-account-group { display:flex; align-items:center; gap:12px; background:transparent; flex:0 0 auto; }
 body > header .nav-account-group > button { height:44px; min-height:44px; display:inline-flex; align-items:center; justify-content:center; box-sizing:border-box; border-radius:100px; }
-body > header .nav-account-group .language-switch summary { color:#111; height:44px; box-sizing:border-box; padding:0 14px; gap:7px; }
+body > header .nav-account-group .language-switch summary { background:#fff; color:#111; height:44px; box-sizing:border-box; padding:0 14px; gap:7px; }
 @media(min-width:651px) {
  body > header .nav-account-group .language-switch summary { width:auto; }
  body > header .nav-account-group .language-switch summary span { display:inline; }
- body > header .nav-account-group .language-switch { border-right:1px solid #eeeaf3; }
+ body > header .nav-account-group .language-switch { border:0; }
 }
 @media(max-width:650px) {
  body > header .nav-account-group > button { font-size:11px; padding-inline:8px; }
  body > header .nav-account-group .language-switch summary { width:36px; padding:0; }
+}
+
+/* Mobile navigation and persistent signup. */
+.mobile-signup { display:none; }
+@media (max-width:650px) {
+  body > header .nav-shell .logo { font-size:16px; gap:5px; }
+  body > header .nav-shell nav > button,
+  body > header .nav-account-group > button { display:none; }
+  body > header .nav-shell nav { margin-left:auto; }
+  body > header .nav-account-group .language-switch summary { width:auto; padding:0 10px; }
+  body > header .nav-account-group .language-switch summary span { display:inline; }
+  .mobile-signup {
+    display:flex; position:fixed; bottom:0; left:0; right:0; z-index:90;
+    padding:16px 20px calc(16px + env(safe-area-inset-bottom));
+    background:#fff; box-shadow:0 -4px 24px #24153d0a;
+    transform:translateY(110%); opacity:0; visibility:hidden;
+    transition:transform .65s cubic-bezier(.22,1,.36,1), opacity .45s ease, visibility .65s;
+  }
+  .mobile-signup.is-visible { transform:translateY(0); opacity:1; visibility:visible; }
+  .mobile-signup > button { width:100%; min-height:48px; border-radius:100px; font-size:16px; }
+  body { padding-bottom:calc(84px + env(safe-area-inset-bottom)); }
+}
+@media (prefers-reduced-motion:reduce) {
+  .mobile-signup { transition:none; }
+}
+
+@media (max-width:650px) {
+  body > header,
+  body > header.scrolled,
+  body > header.second-screen { height:56px; box-sizing:border-box; }
+  body > header .nav-shell,
+  body > header.second-screen .nav-shell { height:56px; box-sizing:border-box; transform:none; }
+  body > header .nav-shell .logo { font-size:16.8px; gap:5.25px; }
+  body > header .nav-shell .logo img { width:29.4px; }
+}
+
+/* Hide opening floating portraits on phones. */
+@media (max-width:650px) {
+  body .hero-scroll-shell .world-hero > .scene-stage { display:none; }
+}
+
+/* On phones, lead the second section with the industry cards. */
+@media (max-width:650px) {
+  body main > .mobile-industry-gallery { display:flex; flex-direction:column; }
+  .mobile-industry-gallery > .mobile-industry-track { order:0; padding-top:0; padding-bottom:0; }
+  .mobile-industry-gallery > .mobile-industry-copy { order:1; margin-top:32px; }
+}
+
+@media (max-width:650px) {
+  body .hero-scroll-shell .hero-copy .checks,
+  body .hero-scroll-shell .hero-copy .checks li {
+    font-size:14px;
+    line-height:20px;
+  }
+}
+
+@media (max-width:650px) {
+  body main > .hero-scroll-shell > .world-hero {
+    min-height:0;
+    height:auto;
+    padding-top:112px; /* 56px fixed navigation + 56px content spacing. */
+    padding-bottom:56px;
+  }
+}
+
+@media (max-width:650px) {
+  .mobile-industry-gallery > .mobile-industry-track {
+    position:relative;
+    gap:16px;
+    --arc-card-width:min(62.7vw, 266px);
+    padding:24px calc((100% - var(--arc-card-width)) / 2) 64px;
+    scroll-padding-inline:17%;
+    scroll-snap-type:x mandatory;
+    overscroll-behavior-x:contain;
+  }
+  .mobile-industry-track > .mobile-industry-card {
+    flex:0 0 auto;
+    width:var(--arc-card-width);
+    max-width:266px;
+    height:260px;
+    transform-origin:50% 50%;
+    scroll-snap-align:center;
+    will-change:transform;
+  }
+}
+
+.mobile-industry-track > .arc-copy { display:none; }
+@media (max-width:650px) {
+  .mobile-industry-track > .arc-copy { display:block; }
+  .mobile-industry-gallery > .mobile-industry-track { overflow-anchor:none; }
+}
+
+@media (max-width:650px) {
+  .mobile-industry-gallery > .mobile-industry-track {
+    overflow-x:auto;
+    overflow-y:hidden;
+    overscroll-behavior-y:none;
+    touch-action:pan-x;
+  }
+}
+
+/* Curved trapezoid silhouettes follow the fan-shaped carousel. */
+@media (max-width:650px) {
+  .mobile-industry-track > .mobile-industry-card {
+    border-radius:0;
+    -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpath d='M8 4 Q50 -3 92 4 Q100 5 99 13 L92 91 Q91 99 83 97 Q50 92 17 97 Q9 99 8 91 L1 13 Q0 5 8 4Z' fill='black'/%3E%3C/svg%3E");
+    mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpath d='M8 4 Q50 -3 92 4 Q100 5 99 13 L92 91 Q91 99 83 97 Q50 92 17 97 Q9 99 8 91 L1 13 Q0 5 8 4Z' fill='black'/%3E%3C/svg%3E");
+    -webkit-mask-size:100% 100%;
+    mask-size:100% 100%;
+    -webkit-mask-repeat:no-repeat;
+    mask-repeat:no-repeat;
+  }
+  .mobile-industry-track > .mobile-industry-card > span {
+    left:12%;
+    right:12%;
+    bottom:9%;
+  }
+}
+
+/* One shared curved window keeps the upper silhouette continuous while scrolling. */
+@media (max-width:650px) {
+  .mobile-industry-gallery > .mobile-industry-track {
+    -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 428 348' preserveAspectRatio='none'%3E%3Cpath d='M0 72 Q214 8 428 72 L428 312 Q214 248 0 312Z' fill='black'/%3E%3C/svg%3E");
+    mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 428 348' preserveAspectRatio='none'%3E%3Cpath d='M0 72 Q214 8 428 72 L428 312 Q214 248 0 312Z' fill='black'/%3E%3C/svg%3E");
+    -webkit-mask-size:100% 100%;
+    mask-size:100% 100%;
+    -webkit-mask-repeat:no-repeat;
+    mask-repeat:no-repeat;
+  }
+  .mobile-industry-track > .mobile-industry-card {
+    -webkit-mask-image:none;
+    mask-image:none;
+    clip-path:polygon(0 0,100% 0,91% 100%,9% 100%);
+    border-radius:16px;
+  }
+}
+
+@media (max-width:650px) {
+  .mobile-industry-track > .mobile-industry-card {
+    /* Extend through the shared lower arc so individual bottoms cannot interrupt it. */
+    height:300px;
+    clip-path:none;
+    border-radius:0;
+    -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpath d='M7 0 H93 Q100 0 99 7 L91 94 Q90 100 84 100 H16 Q10 100 9 94 L1 7 Q0 0 7 0Z' fill='black'/%3E%3C/svg%3E");
+    mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='none'%3E%3Cpath d='M7 0 H93 Q100 0 99 7 L91 94 Q90 100 84 100 H16 Q10 100 9 94 L1 7 Q0 0 7 0Z' fill='black'/%3E%3C/svg%3E");
+  }
+  .mobile-industry-gallery > .mobile-industry-track {
+    height:348px;
+    box-sizing:border-box;
+    padding-bottom:24px;
+  }
+}
+
+/* Each card is an annular segment; no shared mask can cut its caption. */
+@media (max-width:650px) {
+  .mobile-industry-gallery > .mobile-industry-track {
+    -webkit-mask-image:none;
+    mask-image:none;
+    height:370px;
+    padding-top:24px;
+    padding-bottom:66px;
+  }
+  .mobile-industry-track > .mobile-industry-card {
+    height:280px;
+    transform-origin:50% 0;
+    -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 266 280' preserveAspectRatio='none'%3E%3Cpath d='M13 7 Q133 -7 253 7 Q265 8 263 20 L234 258 Q233 270 221 268 Q133 257 45 268 Q33 270 32 258 L3 20 Q1 8 13 7Z' fill='black'/%3E%3C/svg%3E");
+    mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 266 280' preserveAspectRatio='none'%3E%3Cpath d='M13 7 Q133 -7 253 7 Q265 8 263 20 L234 258 Q233 270 221 268 Q133 257 45 268 Q33 270 32 258 L3 20 Q1 8 13 7Z' fill='black'/%3E%3C/svg%3E");
+  }
+  .mobile-industry-track > .mobile-industry-card > span {
+    left:15%; right:15%; bottom:12%;
+  }
+}
+
+@media (max-width:650px) {
+  .mobile-industry-gallery > .mobile-industry-copy { margin-top:0; }
+}
+
+@media (max-width:650px) {
+  /* Offset the carousel's reserved arc space to leave a compact visual gap. */
+  .mobile-industry-gallery > .mobile-industry-copy { margin-top:-32px; }
+}
+
+/* Consistent section spacing on phones. */
+@media (max-width:650px) {
+  :root { --section-gap:80px; }
+  body main > section,
+  body main > .section-card-stack,
+  body main > .mobile-industry-gallery,
+  body main > .hero-scroll-shell + section,
+  body main > .mobile-industry-gallery + section.price,
+  body main > .section-card-stack + .founder {
+    margin-top:80px;
+  }
+  body .section-card-stack .section-card-stage + .section-card-stage {
+    margin-top:80px;
+  }
+  body > footer.site-footer { margin-top:80px; }
+}
+
+/* Compact transition from the opening copy to the industry carousel. */
+@media (max-width:650px) {
+  body main > .hero-scroll-shell > .world-hero { padding-bottom:0; }
+  body main > .hero-scroll-shell + .mobile-industry-gallery { margin-top:0; }
+  body .hero-scroll-shell .hero-copy .checks { margin-bottom:0; }
+  /* The carousel's 24px top padding supplies the section transition. */
+}
+
+@media (max-width:650px) {
+  /* 32px section margin + 24px carousel padding = 56px. */
+  body main > .hero-scroll-shell + .mobile-industry-gallery { margin-top:32px; }
 }
