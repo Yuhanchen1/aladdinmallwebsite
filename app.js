@@ -870,53 +870,58 @@ document.querySelectorAll("[data-sector]").forEach((control) => {
   fit();
 })();
 
-// Native touch scrolling with repeated cards and seamless arc wrapping.
+// Embla owns touch momentum and looping; inner artwork owns the arc transform.
 (() => {
-  const track = document.querySelector('.mobile-industry-track');
-  if (!track) return;
-  const originals = [...track.children];
-  if (!originals.length) return;
-  const makeCopies = () => originals.map(card => {
-    const copy = card.cloneNode(true);
-    copy.classList.add('arc-copy');
-    copy.setAttribute('aria-hidden', 'true');
-    return copy;
+  const viewport = document.querySelector('.mobile-industry-track');
+  if (!viewport || !window.EmblaCarousel) return;
+  const cards = [...viewport.children];
+  const container = document.createElement('div');
+  container.className = 'industry-embla-container';
+  const slides = cards.map(card => {
+    const slide = document.createElement('div');
+    slide.className = 'industry-embla-slide';
+    slide.append(card);
+    container.append(slide);
+    return slide;
   });
-  track.prepend(...makeCopies());
-  track.append(...makeCopies());
-  const cards = [...track.children];
-  let frame = 0, initialized = false;
-  function renderArc() {
-    frame = 0;
-    const phone = matchMedia('(max-width:650px)').matches;
-    if (phone) {
-      const first = originals[0];
-      const cycle = originals.length * (originals[1].offsetLeft - first.offsetLeft);
-      if (cycle > 0) {
-        const origin = first.offsetLeft + first.offsetWidth / 2 - track.clientWidth / 2;
-        let next = initialized ? track.scrollLeft : origin;
-        if (next < origin - cycle / 2) next += cycle;
-        if (next >= origin + cycle / 2) next -= cycle;
-        if (!initialized || Math.abs(next - track.scrollLeft) > 1) {
-          track.scrollTo({left:next, behavior:'instant'});
-        }
-        initialized = true;
-      }
-    } else if (initialized) {
-      initialized = false;
-      track.scrollTo({left:0, behavior:'instant'});
-    }
-    const center = track.scrollLeft + track.clientWidth / 2;
-    cards.forEach(card => {
-      if (!phone) { card.style.transform = ''; return; }
-      const dx = card.offsetLeft + card.offsetWidth / 2 - center;
-      const radius = card.offsetWidth * 4;
+  viewport.append(container);
+  const media = matchMedia('(max-width:650px)');
+  let embla;
+  function updateArc() {
+    if (!embla) return;
+    const engine = embla.internalEngine();
+    const progress = embla.scrollProgress();
+    const snaps = embla.scrollSnapList();
+    const width = slides[0].offsetWidth;
+    const radius = width * 4;
+    const travel = engine.scrollSnaps.length > 1
+      ? Math.abs(engine.scrollSnaps[1] - engine.scrollSnaps[0]) / Math.abs(snaps[1] - snaps[0])
+      : width;
+    const transforms = cards.map((card, i) => {
+      let diff = snaps[i] - progress;
+      engine.slideLooper.loopPoints.forEach(point => {
+        if (point.index !== i) return;
+        const target = point.target();
+        if (target < 0) diff -= 1;
+        if (target > 0) diff += 1;
+      });
+      const dx = diff * travel;
       const angle = Math.max(-1.2, Math.min(1.2, dx / radius));
-      card.style.transform = `translate(${radius * Math.sin(angle) - dx}px, ${radius * (1 - Math.cos(angle))}px) rotate(${angle * 180 / Math.PI}deg)`;
+      return `translate3d(${radius * Math.sin(angle) - dx}px, ${radius * (1 - Math.cos(angle))}px, 0) rotate(${angle * 180 / Math.PI}deg)`;
     });
+    cards.forEach((card, i) => card.style.transform = transforms[i]);
   }
-  function schedule() { if (!frame) frame = requestAnimationFrame(renderArc); }
-  track.addEventListener('scroll', schedule, { passive:true });
-  addEventListener('resize', schedule);
-  schedule();
+  function configure() {
+    if (media.matches && !embla) {
+      embla = EmblaCarousel(viewport, {loop:true, align:'center', containScroll:false, duration:25});
+      embla.on('scroll', updateArc).on('reInit', updateArc);
+      updateArc();
+    } else if (!media.matches && embla) {
+      embla.destroy();
+      embla = undefined;
+      cards.forEach(card => card.style.transform = '');
+    }
+  }
+  media.addEventListener('change', configure);
+  configure();
 })();

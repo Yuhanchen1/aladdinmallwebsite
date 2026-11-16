@@ -2525,3 +2525,27 @@ body > header .nav-account-group .language-switch summary { background:#fff; col
   /* 32px section margin + 24px carousel padding = 56px. */
   body main > .hero-scroll-shell + .mobile-industry-gallery { margin-top:32px; }
 }
+
+.industry-embla-container { display:flex; gap:18px; }
+.industry-embla-slide { flex:0 0 180px; min-width:0; }
+@media (max-width:650px) {
+  .mobile-industry-gallery > .mobile-industry-track {
+    display:block;
+    overflow:hidden;
+    padding:24px 0 66px;
+    scroll-snap-type:none;
+    touch-action:pan-x;
+  }
+  .industry-embla-container { gap:16px; height:280px; }
+  .industry-embla-slide { flex:0 0 var(--arc-card-width); min-width:0; }
+  .industry-embla-slide > .mobile-industry-card {
+    width:100%; max-width:none; height:280px;
+    transform-origin:50% 0;
+    border-radius:0;
+    -webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 266 280' preserveAspectRatio='none'%3E%3Cpath d='M13 7 Q133 -7 253 7 Q265 8 263 20 L234 258 Q233 270 221 268 Q133 257 45 268 Q33 270 32 258 L3 20 Q1 8 13 7Z' fill='black'/%3E%3C/svg%3E");
+    mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 266 280' preserveAspectRatio='none'%3E%3Cpath d='M13 7 Q133 -7 253 7 Q265 8 263 20 L234 258 Q233 270 221 268 Q133 257 45 268 Q33 270 32 258 L3 20 Q1 8 13 7Z' fill='black'/%3E%3C/svg%3E");
+    -webkit-mask-size:100% 100%; mask-size:100% 100%;
+    will-change:transform;
+  }
+  .industry-embla-slide > .mobile-industry-card > span { left:15%; right:15%; bottom:12%; }
+}
