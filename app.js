@@ -4,8 +4,10 @@ mobileSignup.className = "mobile-signup";
 const mobileSignupButton = document.querySelector('header [data-open="signup"]').cloneNode(true);
 mobileSignup.append(mobileSignupButton);
 document.body.append(mobileSignup);
+const closingSignupSection = document.querySelector('main > .cta-inline');
 function syncMobileSignup() {
-  const visible = matchMedia("(max-width: 650px)").matches && scrollY >= innerHeight * 0.85;
+  const reachedClosingCta = closingSignupSection && closingSignupSection.getBoundingClientRect().top < innerHeight;
+  const visible = matchMedia("(max-width: 650px)").matches && scrollY >= innerHeight * 0.85 && !reachedClosingCta;
   mobileSignup.classList.toggle("is-visible", visible);
   mobileSignup.inert = !visible;
 }

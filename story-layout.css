@@ -2599,3 +2599,41 @@ body > header .nav-account-group .language-switch summary { background:#fff; col
 
 /* Bring the download badges closer to the app descriptions. */
 body .app-grid > article > p { margin-bottom:18px; }
+
+@media (max-width:650px) {
+  body .app-grid > article > p { margin-bottom:28px; }
+}
+
+@media (max-width:650px) {
+  body .cta-inline > h2 {
+    font-size:var(--type-h1) !important;
+    line-height:var(--type-h1-leading) !important;
+  }
+}
+
+.cta-inline-art.cta-business-art { width:3.12em; height:1em; }
+.cta-inline-art.cta-business-art img { width:100%; height:auto; }
+
+.cta-inline > h2 .cta-online-pill {
+  display:inline-flex;
+  align-items:center;
+  gap:.12em;
+  padding:.02em .22em .07em .14em;
+  border-radius:999px;
+  background:#fff9bf;
+  vertical-align:baseline;
+  white-space:nowrap;
+  line-height:1;
+}
+.cta-online-pill > img {
+  display:block;
+  width:1.02em;
+  height:auto;
+  flex-shrink:0;
+}
+
+@media (max-width:650px) {
+  .industry-embla-container { height:252px; }
+  .industry-embla-slide > .mobile-industry-card { height:252px; }
+  .mobile-industry-gallery > .mobile-industry-track { height:342px; }
+}
